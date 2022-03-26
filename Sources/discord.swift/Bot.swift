@@ -6,27 +6,23 @@ public class Bot {
     
     private (set) var token: String
     internal var status: Gateway.Status = .idle
+    public var gateway: Gateway
     
     // Initialize client from token
     public init (_ token: String) {
         self.token = token
+        self.gateway = Gateway(token: token)
     }
     
     // Initialize client from BOT_TOKEN env var
-    public init? () {
+    public convenience init? () {
         guard let token = ProcessInfo.processInfo.environment["BOT_TOKEN"] else { return nil }
-        self.token = token
+        self.init(token)
     }
     
     public func connect() async throws {
-        self.socket.onEvent = handleEvent(_:)
-        self.socket.connect()
+        self.gateway.socket.onEvent = gateway.handleEvent(_:)
+        self.gateway.socket.connect()
     }
-    
-    lazy var socket: WebSocket = {
-        let request = URLRequest(url: Discord.Endpoints.gateway)
-        print("[Socket] Hello world!")
-        return WebSocket(request: request)
-    }()
     
 }
