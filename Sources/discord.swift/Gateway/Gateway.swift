@@ -44,14 +44,18 @@ final public class Gateway {
     
     internal var interval: Int = 45000
     internal var seq: Int = 0
+    internal var sessionID: String?
+    internal var intents: Discord.Intents = []
+
     
     lazy var socket: WebSocket = {
         let request = URLRequest(url: Discord.Endpoints.gateway)
         return WebSocket(request: request)
     }()
     
-    init(token: String) {
+    init(token: String, intents: Discord.Intents) {
         self.token = token
+        self.intents = intents
     }
     
     private func send<C: Collection>(json packet: C) async throws {
@@ -60,11 +64,12 @@ final public class Gateway {
     }
     
     func identify() async throws {
+        print(self.intents.rawValue)
         let packet: [String:Any] = [
             "op":2,
             "d":[
                 "token":token,
-                "intents": 513,
+                "intents": self.intents.rawValue,
                 "properties": [
                     "$os": "macOS",
                     "$browser": "discord.swift",
@@ -76,5 +81,89 @@ final public class Gateway {
         log("~> IDENTIFY")
         #endif
         try await self.send(json: packet)
+    }
+    
+    private func heartbeat() async throws {
+        let packet: [String: Any] = [
+            "op": 1,
+            "d": seq,
+        ]
+        try await send(json: packet)
+    }
+
+    public func updatePresence(status: String, since: Int) async throws {
+        let packet: [String: Any] = [
+            "op": 3,
+            "d": [
+                "status": status,
+                "since": since,
+                "activities": [],
+                "afk": false,
+            ],
+        ]
+        try await send(json: packet)
+    }
+
+    public func reconnect(session_id: String? = nil, seq: Int? = nil) async throws {
+        let packet: [String: Any] = [
+            "op": 6,
+            "d": [
+                "seq": seq ?? self.seq,
+                "session_id": session_id ?? sessionID ?? "",
+                "token": self.token,
+            ],
+        ]
+        try await send(json: packet)
+    }
+
+    public func subscribe(to guild: String) async throws {
+        let packet: [String: Any] = [
+            "op": 14,
+            "d": [
+                "guild_id": guild,
+                "typing": true,
+                "activities": true,
+                "threads": true,
+            ],
+        ]
+        try await send(json: packet)
+    }
+
+    public func memberList(for guild: String, in channel: String) async throws {
+        let packet: [String: Any] = [
+            "op": 14,
+            "d": [
+                "channels": [
+                    channel: [[
+                        0, 99,
+                    ]],
+                ],
+                "guild_id": guild,
+            ],
+        ]
+        try await send(json: packet)
+    }
+
+    public func subscribeToDM(_ channel: String) async throws {
+        let packet: [String: Any] = [
+            "op": 13,
+            "d": [
+                "channel_id": channel,
+            ],
+        ]
+        try await send(json: packet)
+        print("sent packet")
+    }
+
+    public func getMembers(ids: [String], guild: String) async throws {
+        let packet: [String: Any] = [
+            "op": 8,
+            "d": [
+                "limit": 0,
+                "user_ids": ids,
+                "guild_id": guild,
+            ],
+        ]
+        try await send(json: packet)
     }
 }

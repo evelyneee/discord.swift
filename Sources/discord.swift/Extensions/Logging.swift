@@ -6,8 +6,8 @@ public let ENABLE_FILE_EXTENSION_LOGGING: Bool = false
 
 public func log<T>(_ items: T..., file: String = #fileID, line: Int = #line, separator: String = " ") {
     let file = ENABLE_FILE_EXTENSION_LOGGING ?
-        file.components(separatedBy: "/").last ?? "Accord" :
-        file.components(separatedBy: "/").last?.components(separatedBy: ".").first ?? "Accord"
+        file.components(separatedBy: "/").last ?? "discord.swift" :
+        file.components(separatedBy: "/").last?.components(separatedBy: ".").first ?? "discord.swift"
     let line = ENABLE_LINE_LOGGING ? ":\(String(line))" : ""
     log(items: items, file: file, line: line, separator: separator)
 }
@@ -15,23 +15,23 @@ public func log<T>(_ items: T..., file: String = #fileID, line: Int = #line, sep
 public func log<S: StringProtocol>(_ items: S?..., file: String = #fileID, line: Int = #line, separator: String = " ") {
     let items: [String] = items.map { $0 ?? "nil" }.compactMap { String($0) }
     let file = ENABLE_FILE_EXTENSION_LOGGING ?
-        file.components(separatedBy: "/").last ?? "Accord" :
-        file.components(separatedBy: "/").last?.components(separatedBy: ".").first ?? "Accord"
+        file.components(separatedBy: "/").last ?? "discord.swift" :
+        file.components(separatedBy: "/").last?.components(separatedBy: ".").first ?? "discord.swift"
     let line = ENABLE_LINE_LOGGING ? ":\(String(line))" : ""
     log(items: items, file: file, line: line, separator: separator)
 }
 
 public func log(_ items: Any..., file: String = #fileID) {
     let file = ENABLE_FILE_EXTENSION_LOGGING ?
-        file.components(separatedBy: "/").last ?? "Accord" :
-        file.components(separatedBy: "/").last?.components(separatedBy: ".").first ?? "Accord"
+        file.components(separatedBy: "/").last ?? "discord.swift" :
+        file.components(separatedBy: "/").last?.components(separatedBy: ".").first ?? "discord.swift"
     log(items: items, file: file)
 }
 
 public func log(_ item: Any, file: String = #fileID, line: Int = #line) {
     let file = ENABLE_FILE_EXTENSION_LOGGING ?
-        file.components(separatedBy: "/").last ?? "Accord" :
-        file.components(separatedBy: "/").last?.components(separatedBy: ".").first ?? "Accord"
+        file.components(separatedBy: "/").last ?? "discord.swift" :
+        file.components(separatedBy: "/").last?.components(separatedBy: ".").first ?? "discord.swift"
     let line = ENABLE_LINE_LOGGING ? ":\(String(line))" : ""
     log(items: [item], file: file, line: line)
 }

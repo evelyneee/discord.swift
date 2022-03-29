@@ -4,12 +4,15 @@ import Foundation
 import Starscream
 
 extension Gateway {
-    
     func handleEvent(_ event: WebSocketEvent) {
         Task.detached {
             switch event {
             case .connected(_): break
-            case .disconnected(_, _): break
+            case .disconnected(let reason, let code):
+                log("Disconnected with code " + String(code) + " for reason: " + reason)
+                if code != Starscream.CloseCode.normal.rawValue {
+                    try await self.reconnect()
+                }
             case .text(let string):
                 if let data = string.data(using: .utf8) {
                     let event = try GatewayEvent(data: data)
@@ -25,8 +28,10 @@ extension Gateway {
                 break
             case .viabilityChanged(_):
                 break
-            case .reconnectSuggested(_):
-                break
+            case .reconnectSuggested(let reconnect):
+                if reconnect {
+                    try await self.reconnect()
+                }
             case .cancelled:
                 break
             }
@@ -93,6 +98,10 @@ extension Gateway {
             #if DEBUG
             log("<~ READY")
             #endif
+            let packet = try JSONSerialization.jsonObject(with: event.data, options: []) as? [String:Any]
+            let d = packet?["d"] as? [String:Any]
+            let sessionID = d?["session_id"] as? String
+            self.sessionID = sessionID
             log(event.data)
         default: break
         }
