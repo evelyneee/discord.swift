@@ -16,7 +16,7 @@ extension Bot {
     }
 }
 
-extension Channel {
+extension Discord.Channel {
     #warning("TODO: Message type")
     // public func fetchMessages() async throws ->
 }
