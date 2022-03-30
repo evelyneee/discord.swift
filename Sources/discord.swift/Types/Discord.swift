@@ -12,5 +12,6 @@ public enum Discord {
         static var myChannels = me.appendingPathComponent("channels")
         static var guilds = root.appendingPathComponent("guilds")
         static var channels = root.appendingPathComponent("channels")
+        static var users = root.appendingPathComponent("users")
     }
 }

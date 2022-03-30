@@ -9,12 +9,12 @@ extension Discord {
         public let id: String
         var username: String
         var discriminator: String
-        var avatarImageURL: String?
+        var avatarHash: String?
         var isBot: Bool?
-        var system: Bool?
+        var isSystemUser: Bool?
         var hasMFAEnabled: Bool?
         var userLocale: String?
-        var isVerified: Bool?
+        var hasVerifiedEmail: Bool?
         var email: String?
         var flags: Int?
         var nitroPremiumType: NitroTypes?
@@ -30,15 +30,16 @@ extension Discord {
         }
         
         enum CodingKeys: String, CodingKey {
-            case id, username, discriminator, roleColor, banner, system
-            case avatarImageURL = "avatar"
+            case id, username, discriminator, roleColor, banner, email
+            case avatarHash = "avatar"
             case isBot = "bot"
             case hasMFAEnabled = "mfa_enabled"
             case userLocale = "locale"
-            case isVerified = "verified"
+            case hasVerifiedEmail = "verified"
             case nitroPremiumType = "premium_type"
             case publicFlags = "public_flags"
             case nickname = "nick"
+            case isSystemUser = "system"
         }
     }
 
