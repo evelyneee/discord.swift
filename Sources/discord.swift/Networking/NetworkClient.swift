@@ -31,33 +31,32 @@ final public class NetworkClient {
 
     func fetch<T: Decodable>(
         _: T.Type,
-        request: URLRequest? = nil,
-        url: URL? = nil,
+        url: URL,
         bodyObject: [String:Any]? = nil,
         headers: [AnyHashable:Any] = [:],
         decoder: JSONDecoder = .init()
     ) async throws -> (T, URLResponse) {
-        var request: URLRequest? = {
-            if let request = request {
-                return request
-            } else if let url = url {
-                return URLRequest(url: url)
-            } else {
-                print("You need to provide a request method")
-                return nil
-            }
-        }()
+        try await fetch(T.self, request: URLRequest(url: url), bodyObject: bodyObject, headers: headers, decoder: decoder)
+    }
+    
+    func fetch<T: Decodable>(
+        _: T.Type,
+        request req: URLRequest,
+        bodyObject: [String:Any]? = nil,
+        headers: [AnyHashable:Any] = [:],
+        decoder: JSONDecoder = .init()
+    ) async throws -> (T, URLResponse) {
+        var request = req
         
-        if request?.url?.absoluteString.contains("https://discord.com/api") ?? false {
-            request?.addValue(self.token, forHTTPHeaderField: "Authorization")
+        if request.url?.absoluteString.contains("https://discord.com/api") ?? false {
+            request.addValue(self.token, forHTTPHeaderField: "Authorization")
         }
         
         if let bodyObject = bodyObject  {
             let body = try JSONSerialization.data(withJSONObject: bodyObject, options: [])
-            request?.httpBody = body
+            request.httpBody = body
         }
         
-        guard let request = request else { throw FetchErrors.invalidRequest }
         let config = URLSessionConfiguration.default
         config.httpAdditionalHeaders = headers
         let (data, response) = try await URLSession(configuration: config).data(for: request)
