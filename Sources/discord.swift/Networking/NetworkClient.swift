@@ -33,6 +33,7 @@ final public class NetworkClient {
         _: T.Type,
         request: URLRequest? = nil,
         url: URL? = nil,
+        bodyObject: [String:Any]? = nil,
         headers: [AnyHashable:Any] = [:],
         decoder: JSONDecoder = .init()
     ) async throws -> (T, URLResponse) {
@@ -49,6 +50,11 @@ final public class NetworkClient {
         
         if request?.url?.absoluteString.contains("https://discord.com/api") ?? false {
             request?.addValue(self.token, forHTTPHeaderField: "Authorization")
+        }
+        
+        if let bodyObject = bodyObject  {
+            let body = try JSONSerialization.data(withJSONObject: bodyObject, options: [])
+            request?.httpBody = body
         }
         
         guard let request = request else { throw FetchErrors.invalidRequest }
