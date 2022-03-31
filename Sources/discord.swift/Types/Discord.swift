@@ -13,5 +13,12 @@ public enum Discord {
         static var guilds = root.appendingPathComponent("guilds")
         static var channels = root.appendingPathComponent("channels")
         static var users = root.appendingPathComponent("users")
+        
+        static func banEndpoint(guildID: String, userID: String) -> URL {
+            self.guilds
+                .appendingPathComponent(guildID)
+                .appendingPathComponent("bans")
+                .appendingPathComponent(userID)
+        }
     }
 }

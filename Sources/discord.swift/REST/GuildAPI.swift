@@ -29,16 +29,20 @@ public extension Bot {
     }
     
     func ban(userID: String, guildID: String, deleteMessageDays: Int = 0) async throws {
-        let banURL = Discord.Endpoints.guilds
-            .appendingPathComponent(guildID)
-            .appendingPathComponent("bans")
-            .appendingPathComponent(userID)
+        let banURL = Discord.Endpoints.banEndpoint(guildID: guildID, userID: userID)
         var request = URLRequest(url: banURL)
         request.httpMethod = "PUT"
         let params = [
             "delete_message_days": deleteMessageDays
         ]
         _ = try await self.client.fetch(NetworkClient.AnyDecodable.self, request: request, bodyObject: params)
+    }
+    
+    func unban(userID: String, guildID: String) async throws {
+        let banURL = Discord.Endpoints.banEndpoint(guildID: guildID, userID: userID)
+        var request = URLRequest(url: banURL)
+        request.httpMethod = "DELETE"
+        _ = try await self.client.fetch(NetworkClient.AnyDecodable.self, request: request)
     }
 }
 

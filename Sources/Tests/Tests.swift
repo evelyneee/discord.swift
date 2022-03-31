@@ -56,4 +56,15 @@ final class Tests: XCTestCase {
         }
         try await bot.ban(userID: userID, guildID: exampleGuild)
     }
+    
+    func testUnbanUser() async throws {
+        let bot = try initBot()
+        guard let userID = enviroment["USER_ID_UNBAN_TEST"] else {
+            throw TestErrors.enviromentVariableNotProvided(variableName: "USER_ID_UNBAN_TEST")
+        }
+        guard let exampleGuild = enviroment["GUILD_ID_UNBAN_TEST"] else {
+            throw TestErrors.enviromentVariableNotProvided(variableName: "GUILD_ID_UNBAN_TEST")
+        }
+        try await bot.unban(userID: userID, guildID: exampleGuild)
+    }
 }
