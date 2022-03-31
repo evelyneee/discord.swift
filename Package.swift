@@ -25,6 +25,12 @@ let package = Package(
             name: "discord.swift",
             dependencies: [
                 .byName(name: "Starscream")
-            ])
+            ]),
+        .testTarget(
+            name: "Tests",
+            dependencies: [
+                "discord.swift"
+            ]
+        )
     ]
 )

@@ -60,6 +60,7 @@ final public class NetworkClient {
         let config = URLSessionConfiguration.default
         config.httpAdditionalHeaders = headers
         let (data, response) = try await URLSession(configuration: config).data(for: request)
+        print("string response: \(String(data: data, encoding: .utf8) ?? "unavailable")")
         let decoded = try decoder.decode(T.self, from: data)
         return (decoded, response)
     }

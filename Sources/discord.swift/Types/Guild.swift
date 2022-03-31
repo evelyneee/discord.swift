@@ -7,7 +7,7 @@ public extension Discord {
         }
 
         enum CodingKeys: String, CodingKey {
-            case id, name, owner, roles, channels, threads, banner, index, mergedMember, guildPermissions
+            case id, name, owner, roles, channels, threads, banner, index, mergedMember, guildPermissions, description
             case iconURL = "icon"
             case iconHash = "icon_hash"
             case ownerID = "owner_id"
@@ -26,7 +26,7 @@ public extension Discord {
         }
         
         public let id: String
-        let name: String?
+        let name: String
         var iconURL: String?
         var iconHash: String?
         var owner: Bool?
