@@ -11,22 +11,20 @@ final public class NetworkClient {
     
     class AnyDecodable: Decodable {}
 
-    enum FetchErrors: Error {
-        case invalidRequest
-        case invalidForm
-        case badResponse(URLResponse)
-        case badHTTPResponse(HTTPURLResponse)
-        case notRequired
-        case decodingError(String, Error?)
-        case noData
-        case discordError(code: Int?, message: String?)
+    enum NetworkErrors: Error, LocalizedError, CustomStringConvertible {
+        case badResponseReturned(statusCode: Int, responseString: String?)
+        
+        var description: String {
+            switch self {
+            case .badResponseReturned(let statusCode, let responseString):
+                return "Server unexpectadly returned status code \(statusCode) (should be between 200 and 299)\nResponse: \(responseString ?? "Unavailable")"
+            }
+        }
+        
+        var errorDescription: String? {
+            description
+        }
     }
-
-    struct DiscordError: Decodable {
-        var code: Int
-        var message: String?
-    }
-
     // MARK: - Perform request with completion handler
 
     func fetch<T: Decodable>(
@@ -35,7 +33,7 @@ final public class NetworkClient {
         bodyObject: [String:Any]? = nil,
         headers: [AnyHashable:Any] = [:],
         decoder: JSONDecoder = .init()
-    ) async throws -> (T, URLResponse) {
+    ) async throws -> T {
         try await fetch(T.self, request: URLRequest(url: url), bodyObject: bodyObject, headers: headers, decoder: decoder)
     }
     
@@ -45,7 +43,7 @@ final public class NetworkClient {
         bodyObject: [String:Any]? = nil,
         headers: [AnyHashable:Any] = [:],
         decoder: JSONDecoder = .init()
-    ) async throws -> (T, URLResponse) {
+    ) async throws -> T {
         var request = req
         
         if request.url?.absoluteString.contains("https://discord.com/api") ?? false {
@@ -60,27 +58,26 @@ final public class NetworkClient {
         let config = URLSessionConfiguration.default
         config.httpAdditionalHeaders = headers
         let (data, response) = try await URLSession(configuration: config).data(for: request)
-        print("string response: \(String(data: data, encoding: .utf8) ?? "unavailable")")
-        let decoded = try decoder.decode(T.self, from: data)
-        return (decoded, response)
+        
+        if let response = response as? HTTPURLResponse {
+            // make sure the status code returned is between 200 and 299
+            guard (200...299) ~= response.statusCode else {
+                throw NetworkErrors.badResponseReturned(statusCode: response.statusCode, responseString: String(data: data, encoding: .utf8))
+            }
+        }
+        
+        return try decoder.decode(T.self, from: data)
     }
     
     func fetch(
-        url: URL?,
+        url: URL,
         with payloadJson: [String:Any]? = nil,
         fileURL: String? = nil,
         boundary: String = "Boundary-\(UUID().uuidString)",
         headers: [AnyHashable:Any] = [:]
     ) async throws -> (Data, URLResponse) {
-        let request: URLRequest? = {
-            if let url = url {
-                return URLRequest(url: url)
-            } else {
-                print("You need to provide a request method")
-                return nil
-            }
-        }()
-        guard var request = request else { throw FetchErrors.invalidRequest }
+        var request = URLRequest(url: url)
+        
         let config = URLSessionConfiguration.default
         config.httpAdditionalHeaders = headers
         
