@@ -27,6 +27,19 @@ public extension Bot {
             throw NetworkClient.FetchErrors.badResponse(response)
         }
     }
+    
+    func ban(userID: String, guildID: String, deleteMessageDays: Int = 0) async throws {
+        let banURL = Discord.Endpoints.guilds
+            .appendingPathComponent(guildID)
+            .appendingPathComponent("bans")
+            .appendingPathComponent(userID)
+        var request = URLRequest(url: banURL)
+        request.httpMethod = "PUT"
+        let params = [
+            "delete_message_days": deleteMessageDays
+        ]
+        _ = try await self.client.fetch(NetworkClient.AnyDecodable.self, request: request, bodyObject: params)
+    }
 }
 
 extension Discord.Guild {
