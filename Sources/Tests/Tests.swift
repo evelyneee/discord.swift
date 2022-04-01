@@ -2,12 +2,12 @@
 import XCTest
 
 enum TestErrors: Error, LocalizedError {
-    case enviromentVariableNotProvided(variableName: String)
+    case enviromentVariablesNotFound(variable: String)
     
     var errorDescription: String? {
         switch self {
-        case .enviromentVariableNotProvided(let variableName):
-            return "Needed enviroment variable \"\(variableName)\" not provided."
+        case .enviromentVariablesNotFound(let variables):
+            return "Needed enviroment variable not provided: \(variables)"
         }
     }
 }
@@ -15,18 +15,20 @@ enum TestErrors: Error, LocalizedError {
 final class Tests: XCTestCase {
     let enviroment = ProcessInfo.processInfo.environment
     
-    private func initBot() throws -> Bot {
-        guard let bot = Bot() else {
-            throw TestErrors.enviromentVariableNotProvided(variableName: "BOT_TOKEN")
+    private func getEnv(_ variable: String) throws -> String {
+        guard let env = enviroment[variable] else {
+            throw TestErrors.enviromentVariablesNotFound(variable: variable)
         }
-        return bot
+        return env
+    }
+    
+    private func initBot() throws -> Bot {
+        return Bot(try getEnv("BOT_TOKEN"))
     }
     
     func testExampleGuild() async throws {
         let bot = try initBot()
-        guard let exampleGuildID = enviroment["EXAMPLE_GUILD_ID"] else {
-            throw TestErrors.enviromentVariableNotProvided(variableName: "EXAMPLE_GUILD_ID")
-        }
+        let exampleGuildID = try getEnv("EXAMPLE_GUILD_ID")
         let guild = try await bot.fetchGuild(id: exampleGuildID)
         print("Guild name: \(guild.name)")
         print("Guild id: \(guild.id)")
@@ -36,9 +38,7 @@ final class Tests: XCTestCase {
     
     func testExampleUser() async throws {
         let bot = try initBot()
-        guard let userID = enviroment["EXAMPLE_USER_ID"] else {
-            throw TestErrors.enviromentVariableNotProvided(variableName: "EXAMPLE_USER_ID")
-        }
+        let userID = try getEnv("EXAMPLE_USER_ID")
         let userDetails = try await bot.fetchUser(id: userID)
         print("Username: \(userDetails.username)")
         print("User discriminator: \(userDetails.discriminator)")
@@ -48,23 +48,22 @@ final class Tests: XCTestCase {
     
     func testBanUser() async throws {
         let bot = try initBot()
-        guard let userID = enviroment["USER_ID_BAN_TEST"] else {
-            throw TestErrors.enviromentVariableNotProvided(variableName: "USER_ID_BAN_TEST")
-        }
-        guard let exampleGuild = enviroment["GUILD_ID_BAN_TEST"] else {
-            throw TestErrors.enviromentVariableNotProvided(variableName: "GUILD_EXAMPLE_BAN_ID")
-        }
+        let userID = try getEnv("EXAMPLE_USER_ID")
+        let exampleGuild = try getEnv("EXAMPLE_GUILD_ID")
         try await bot.ban(userID: userID, guildID: exampleGuild)
     }
     
     func testUnbanUser() async throws {
         let bot = try initBot()
-        guard let userID = enviroment["USER_ID_UNBAN_TEST"] else {
-            throw TestErrors.enviromentVariableNotProvided(variableName: "USER_ID_UNBAN_TEST")
-        }
-        guard let exampleGuild = enviroment["GUILD_ID_UNBAN_TEST"] else {
-            throw TestErrors.enviromentVariableNotProvided(variableName: "GUILD_ID_UNBAN_TEST")
-        }
+        let userID = try getEnv("EXAMPLE_USER_ID")
+        let exampleGuild = try getEnv("EXAMPLE_GUILD_ID")
         try await bot.unban(userID: userID, guildID: exampleGuild)
+    }
+    
+    func testKickUser() async throws {
+        let bot = try initBot()
+        let userID = try getEnv("EXAMPLE_USER_ID")
+        let exampleGuild = try getEnv("EXAMPLE_GUILD_ID")
+        try await bot.kick(userID: userID, guildID: exampleGuild)
     }
 }

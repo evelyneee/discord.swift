@@ -44,10 +44,18 @@ public extension Bot {
         request.httpMethod = "DELETE"
         _ = try await self.client.fetch(NetworkClient.AnyDecodable.self, request: request)
     }
+    
+    func kick(userID: String, guildID: String) async throws {
+        let url = Discord.Endpoints.guildMembersEndpoint(guildID: guildID, userID: userID)
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        _ = try await self.client.fetch(NetworkClient.AnyDecodable.self, request: request)
+    }
+    
 }
 
 extension Discord.Guild {
-    #warning("TODO: Bans, kicks, fetch members, etc")
+//    #warning("TODO: Bans, kicks, fetch members, etc")
 //    public func ban() async throws -> Bool {
 //        let (items, response) = try await self.client.fetch(AnyDecodable.self, url: Discord.Endpoints.guilds)
 //    }
