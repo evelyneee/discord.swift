@@ -3,14 +3,14 @@ import Foundation
 
 public extension Bot {
     func fetchGuilds() async throws -> [Discord.Guild] {
-        let items = try await self.client.fetch([Discord.Guild].self, url: Discord.Endpoints.myGuilds)
-        return items
+        return try await self.client.Request(with: Discord.Endpoints.myGuilds, decodeTo: [Discord.Guild].self)
     }
     
     func fetchGuild(id: String) async throws -> Discord.Guild {
         let guildURL = Discord.Endpoints.guilds.appendingPathComponent(id)
-        let item = try await self.client.fetch(Discord.Guild.self, url: guildURL)
-        return item
+//        let item = try await self.client.fetch(Discord.Guild.self, url: guildURL)
+//        return item
+        return try await self.client.Request(with: guildURL, decodeTo: Discord.Guild.self)
     }
     
     /// Bans a user from a specified Guild
@@ -22,7 +22,8 @@ public extension Bot {
             "delete_message_days": deleteMessageDays
         ]
         
-        _ = try await self.client.fetch(NetworkClient.AnyDecodable.self, request: request, bodyObject: params)
+//        _ = try await self.client.fetch(NetworkClient.AnyDecodable.self, request: request, bodyObject: params)
+        _ = try await self.client.Request(using: request, bodyObject: params)
     }
     
     /// Unbans a user from the specified Guild
@@ -30,7 +31,7 @@ public extension Bot {
         let banURL = Discord.Endpoints.banEndpoint(guildID: guildID, userID: userID)
         var request = URLRequest(url: banURL)
         request.httpMethod = "DELETE"
-        _ = try await self.client.fetch(NetworkClient.AnyDecodable.self, request: request)
+        _ = try await self.client.Request(using: request)
     }
     
     /// Kicks a member from the specified Guild
@@ -38,15 +39,14 @@ public extension Bot {
         let url = Discord.Endpoints.guildMembersEndpoint(guildID: guildID, userID: userID)
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
-        _ = try await self.client.fetch(NetworkClient.AnyDecodable.self, request: request)
+        _ = try await self.client.Request(using: request)
     }
     
     /// Returns a `Discord.Ban` instance detailing ban information
     /// about a banned member
     func fetchBanInformation(userID: String, guildID: String) async throws -> Discord.Ban {
         let url = Discord.Endpoints.banEndpoint(guildID: guildID, userID: userID)
-        let (item, _) = try await self.client.fetch(Discord.Ban.self, url: url)
-        return item
+        return try await self.client.Request(with: url, decodeTo: Discord.Ban.self)
     }
 }
 

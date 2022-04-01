@@ -27,23 +27,13 @@ final public class NetworkClient {
     }
     // MARK: - Perform request with completion handler
 
-    func fetch<T: Decodable>(
-        _: T.Type,
-        url: URL,
-        bodyObject: [String:Any]? = nil,
-        headers: [AnyHashable:Any] = [:],
-        decoder: JSONDecoder = .init()
-    ) async throws -> T {
-        try await fetch(T.self, request: URLRequest(url: url), bodyObject: bodyObject, headers: headers, decoder: decoder)
+    /// Makes a Request using the specifed `URL` and returns the raw data
+    func Request(with url: URL, bodyObject: [String: Any]? = nil, headers: [AnyHashable: Any] = [:]) async throws -> Data {
+        try await self.Request(using: URLRequest(url: url))
     }
     
-    func fetch<T: Decodable>(
-        _: T.Type,
-        request req: URLRequest,
-        bodyObject: [String:Any]? = nil,
-        headers: [AnyHashable:Any] = [:],
-        decoder: JSONDecoder = .init()
-    ) async throws -> T {
+    /// Makes a Request using the specified `URLRequest`, and returns the raw data
+    func Request(using req: URLRequest, bodyObject: [String: Any]? = nil, headers: [AnyHashable: Any] = [:]) async throws -> Data {
         var request = req
         
         if request.url?.absoluteString.contains("https://discord.com/api") ?? false {
@@ -66,7 +56,26 @@ final public class NetworkClient {
             }
         }
         
-        return try decoder.decode(T.self, from: data)
+        return data
+    }
+    
+    func Request<T: Decodable>(
+        with url: URL,
+        bodyObject: [String: Any]? = nil,
+        headers: [AnyHashable: Any] = [:],
+        decodeTo type: T.Type
+    ) async throws -> T {
+        return try await Request(using: URLRequest(url: url), bodyObject: bodyObject, headers: headers, decodeTo: type)
+    }
+    
+    func Request<T: Decodable>(
+        using request: URLRequest,
+        bodyObject: [String: Any]? = nil,
+        headers: [AnyHashable: Any] = [:],
+        decodeTo type: T.Type
+    ) async throws -> T {
+        let data = try await self.Request(using: request, bodyObject: bodyObject, headers: headers)
+        return try JSONDecoder().decode(type, from: data)
     }
     
     func fetch(
