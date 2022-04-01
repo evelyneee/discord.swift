@@ -66,4 +66,13 @@ final class Tests: XCTestCase {
         let exampleGuild = try getEnv("EXAMPLE_GUILD_ID")
         try await bot.kick(userID: userID, guildID: exampleGuild)
     }
+    
+    func testFetchBanInfo() async throws {
+        let bot = try initBot()
+        let userID = try getEnv("EXAMPLE_USER_ID")
+        let exampleGuild = try getEnv("EXAMPLE_GUILD_ID")
+        let banInfo = try await bot.fetchBanInformation(userID: userID, guildID: exampleGuild)
+        print("Banned user: \(banInfo.user)")
+        print("Ban reason: \(banInfo.reason ?? "Unknown")")
+    }
 }

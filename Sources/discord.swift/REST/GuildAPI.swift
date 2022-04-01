@@ -28,16 +28,19 @@ public extension Bot {
         }
     }
     
+    /// Bans a user from a specified Guild
     func ban(userID: String, guildID: String, deleteMessageDays: Int = 0) async throws {
         let banURL = Discord.Endpoints.banEndpoint(guildID: guildID, userID: userID)
         var request = URLRequest(url: banURL)
         request.httpMethod = "PUT"
-        let params = [
+        let params: [String: Any] = [
             "delete_message_days": deleteMessageDays
         ]
+        
         _ = try await self.client.fetch(NetworkClient.AnyDecodable.self, request: request, bodyObject: params)
     }
     
+    /// Unbans a user from the specified Guild
     func unban(userID: String, guildID: String) async throws {
         let banURL = Discord.Endpoints.banEndpoint(guildID: guildID, userID: userID)
         var request = URLRequest(url: banURL)
@@ -45,6 +48,7 @@ public extension Bot {
         _ = try await self.client.fetch(NetworkClient.AnyDecodable.self, request: request)
     }
     
+    /// Kicks a member from the specified Guild
     func kick(userID: String, guildID: String) async throws {
         let url = Discord.Endpoints.guildMembersEndpoint(guildID: guildID, userID: userID)
         var request = URLRequest(url: url)
@@ -52,6 +56,13 @@ public extension Bot {
         _ = try await self.client.fetch(NetworkClient.AnyDecodable.self, request: request)
     }
     
+    /// Returns a `Discord.Ban` instance detailing ban information
+    /// about a banned member
+    func fetchBanInformation(userID: String, guildID: String) async throws -> Discord.Ban {
+        let url = Discord.Endpoints.banEndpoint(guildID: guildID, userID: userID)
+        let (item, _) = try await self.client.fetch(Discord.Ban.self, url: url)
+        return item
+    }
 }
 
 extension Discord.Guild {
