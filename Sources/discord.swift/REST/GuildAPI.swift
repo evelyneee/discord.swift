@@ -51,6 +51,53 @@ public extension Bot {
     func fetchBans(guilID: String) async throws -> [Discord.Ban] {
         return try await self.client.Request(with: Discord.Endpoints.banEndpoint(guildID: guilID), decodeTo: [Discord.Ban].self)
     }
+    
+    /// Returns an Array of `Discord.Roles` instances belonging to a specified Guild
+    func fetchRoles(guildID: String) async throws -> [Discord.Role] {
+        let url = Discord.Endpoints.roleEndpoint(guildID: guildID, roleID: nil)
+        return try await self.client.Request(with: url, decodeTo: [Discord.Role].self)
+    }
+    
+    /// Sends a request to Discord to create a role, and returns the Role created
+    /// - Parameters:
+    ///   - guildID: The ID of the Guild to create the role for
+    ///   - name: The name of the Role to create
+    ///   - unicodeEmoji: The Unicode Emoji of the Role
+    ///   - colorRGB: the Color of the Role, in RGB
+    ///   - shouldDisplayInSidebar: Whether or not the role should be displayed in the sidebar
+    ///   - shouldBeMentionable: Whether or not the role should be mentionable
+    /// - Returns: The created Role as a `Discord.Role` instance
+    func createRole(
+        guildID: String,
+        name: String,
+        unicodeEmoji: String? = nil,
+        colorRGB: Int = 0,
+        shouldDisplayInSidebar: Bool = true,
+        shouldBeMentionable: Bool = false
+    ) async throws -> Discord.Role {
+        var params: [String: Any] = [
+            "name": name,
+            "hoist": shouldDisplayInSidebar,
+            "color": colorRGB,
+            "mentionable": shouldBeMentionable
+        ]
+        
+        if let unicodeEmoji = unicodeEmoji {
+            params["unicode_emoji"] = unicodeEmoji
+        }
+        var request = URLRequest(url: Discord.Endpoints.roleEndpoint(guildID: guildID))
+        request.httpMethod = "POST"
+        let headers = ["Content-type": "application/json"]
+        return try await self.client.Request(using: request, bodyObject: params, headers: headers, decodeTo: Discord.Role.self)
+    }
+    
+    /// Sends a request to remove a specified Role
+    func removeRole(guildID: String, roleID: String) async throws {
+        let url = Discord.Endpoints.roleEndpoint(guildID: guildID, roleID: roleID)
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        _ = try await self.client.Request(using: request)
+    }
 }
 
 extension Discord.Guild {

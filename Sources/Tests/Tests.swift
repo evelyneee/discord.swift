@@ -89,4 +89,30 @@ final class Tests: XCTestCase {
             }
         }
     }
+    
+    func testFetchRoles() async throws {
+        let bot = try initBot()
+        let exampleGuild = try getEnv("EXAMPLE_GUILD_ID")
+        let roles = try await bot.fetchRoles(guildID: exampleGuild)
+        for role in roles {
+            print("Role name: \(role.name)")
+            print("Role Position: \(role.position)")
+            print("Role is mentionable: \(role.isMentionable)")
+            print("Role Hex Color Code: \(role.HexColorCode)")
+        }
+    }
+    
+    func testCreateRole() async throws {
+        let bot = try initBot()
+        let exampleGuild = try getEnv("EXAMPLE_GUILD_ID")
+        let createdRole = try await bot.createRole(guildID: exampleGuild, name: "An example role", colorRGB: 1021)
+        print("Created Role: \(createdRole)")
+    }
+    
+    func testRemoveRole() async throws {
+        let bot = try initBot()
+        let exampleGuild = try getEnv("EXAMPLE_GUILD_ID")
+        let roleToRemove = try getEnv("EXAMPLE_REMOVE_ROLE_ID")
+        try await bot.removeRole(guildID: exampleGuild, roleID: roleToRemove)
+    }
 }
