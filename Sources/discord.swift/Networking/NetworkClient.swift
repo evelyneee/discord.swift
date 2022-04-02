@@ -13,11 +13,14 @@ final public class NetworkClient {
 
     enum NetworkErrors: Error, LocalizedError, CustomStringConvertible {
         case badResponseReturned(statusCode: Int, responseString: String?)
+        case discordError(DiscordError)
         
         var description: String {
             switch self {
             case .badResponseReturned(let statusCode, let responseString):
                 return "Server unexpectadly returned status code \(statusCode) (should be between 200 and 299)\nResponse: \(responseString ?? "Unavailable")"
+            case .discordError(let discordErr):
+                return "Discord unexpectadly returned an error\nError Code: \(discordErr.code)\nError Messsage: \(discordErr.message)"
             }
         }
         
@@ -48,10 +51,13 @@ final public class NetworkClient {
         let config = URLSessionConfiguration.default
         config.httpAdditionalHeaders = headers
         let (data, response) = try await URLSession(configuration: config).data(for: request)
-        
         if let response = response as? HTTPURLResponse {
             // make sure the status code returned is between 200 and 299
             guard (200...299) ~= response.statusCode else {
+                if let discordErr = try? JSONDecoder().decode(DiscordError.self, from: data) {
+                    throw NetworkErrors.discordError(discordErr)
+                }
+                
                 throw NetworkErrors.badResponseReturned(statusCode: response.statusCode, responseString: String(data: data, encoding: .utf8))
             }
         }

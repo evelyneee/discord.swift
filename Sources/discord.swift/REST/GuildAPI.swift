@@ -20,7 +20,7 @@ public extension Bot {
             "delete_message_days": deleteMessageDays
         ]
         
-        _ = try await self.client.Request(using: request, bodyObject: params)
+        _ = try await self.client.Request(using: request, bodyObject: params, headers: ["Content-type": "application/json"])
     }
     
     /// Unbans a user from the specified Guild
@@ -94,6 +94,20 @@ public extension Bot {
     /// Sends a request to remove a specified Role
     func removeRole(guildID: String, roleID: String) async throws {
         let url = Discord.Endpoints.roleEndpoint(guildID: guildID, roleID: roleID)
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        _ = try await self.client.Request(using: request)
+    }
+    
+    func fetchInviteInformation(inviteCode: String) async throws -> Discord.Invite {
+        let url = Discord.Endpoints.invites
+            .appendingPathComponent(inviteCode)
+        return try await self.client.Request(with: url, decodeTo: Discord.Invite.self)
+    }
+    
+    func deleteInvite(inviteCode: String) async throws {
+        let url = Discord.Endpoints.invites
+            .appendingPathComponent(inviteCode)
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
         _ = try await self.client.Request(using: request)

@@ -13,6 +13,7 @@ public enum Discord {
         static var guilds = root.appendingPathComponent("guilds")
         static var channels = root.appendingPathComponent("channels")
         static var users = root.appendingPathComponent("users")
+        static var invites = root.appendingPathComponent("invites")
         
         /// Returns the Guild Ban Endpoint for a specified user and guild
         static func banEndpoint(guildID: String, userID: String? = nil) -> URL {

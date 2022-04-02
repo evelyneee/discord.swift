@@ -115,4 +115,17 @@ final class Tests: XCTestCase {
         let roleToRemove = try getEnv("EXAMPLE_REMOVE_ROLE_ID")
         try await bot.removeRole(guildID: exampleGuild, roleID: roleToRemove)
     }
+    
+    func testFetchInviteInfo() async throws {
+        let bot = try initBot()
+        let exampleInvite = try getEnv("EXAMPLE_INVITE_CODE")
+        let codeInfo = try await bot.fetchInviteInformation(inviteCode: exampleInvite)
+        print("Example invite: \(codeInfo)")
+    }
+    
+    func testDeleteInvite() async throws {
+        let bot = try initBot()
+        let exampleInvite = try getEnv("EXAMPLE_INVITE_CODE")
+        try await bot.deleteInvite(inviteCode: exampleInvite)
+    }
 }
