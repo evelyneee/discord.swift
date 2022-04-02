@@ -99,15 +99,43 @@ public extension Bot {
         _ = try await self.client.Request(using: request)
     }
     
+    /// Returns information about a specified Invite
+    /// in the form of a `Discord.Invite` instance
     func fetchInviteInformation(inviteCode: String) async throws -> Discord.Invite {
         let url = Discord.Endpoints.invites
             .appendingPathComponent(inviteCode)
         return try await self.client.Request(with: url, decodeTo: Discord.Invite.self)
     }
     
+    /// Sends a Request to discord to delete the specified invite
     func deleteInvite(inviteCode: String) async throws {
         let url = Discord.Endpoints.invites
             .appendingPathComponent(inviteCode)
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        _ = try await self.client.Request(using: request)
+    }
+    
+    /// Returns an Array of `Discord.Sticker` instance
+    /// belonging to the specified Guild
+    func fetchStickers(guildID: String) async throws -> [Discord.Sticker] {
+        let url = Discord.Endpoints.guilds
+            .appendingPathComponent(guildID)
+            .appendingPathComponent("stickers")
+        return try await self.client.Request(with: url, decodeTo: [Discord.Sticker].self)
+    }
+    
+    /// Returns information about a specified Sticker in a
+    /// `Discord.Sticker` Instance
+    func fetchSticker(guildID: String, stickerID: String) async throws -> Discord.Sticker {
+        let url = Discord.Endpoints.guildStickerEndpoint(guildID: guildID, stickerID: stickerID)
+        
+        return try await self.client.Request(with: url, decodeTo: Discord.Sticker.self)
+    }
+    
+    /// Sends a Request to Discord to delete a specified Sticker
+    func deleteSticker(guildID: String, stickerID: String) async throws {
+        let url = Discord.Endpoints.guildStickerEndpoint(guildID: guildID, stickerID: stickerID)
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
         _ = try await self.client.Request(using: request)

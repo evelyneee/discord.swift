@@ -15,7 +15,7 @@ public enum Discord {
         static var users = root.appendingPathComponent("users")
         static var invites = root.appendingPathComponent("invites")
         
-        /// Returns the Guild Ban Endpoint for a specified user and guild
+        /// Returns the Guild Ban Endpoint for a specified user and Guild
         static func banEndpoint(guildID: String, userID: String? = nil) -> URL {
             let url = self.guilds
                 .appendingPathComponent(guildID)
@@ -27,6 +27,16 @@ public enum Discord {
             return url
         }
         
+        /// Returns the Sticker Endpoint for a specified Guild and StickerID
+        static func guildStickerEndpoint(guildID: String, stickerID: String) -> URL {
+            return guilds
+                .appendingPathComponent(guildID)
+                .appendingPathComponent("stickers")
+                .appendingPathComponent(stickerID)
+        }
+        
+        /// Returns the Role Endpoint for a specified Guild
+        /// and for a Role, if specified
         static func roleEndpoint(guildID: String, roleID: String? = nil) -> URL {
             let url = guilds
                 .appendingPathComponent(guildID)
@@ -38,7 +48,7 @@ public enum Discord {
             return url
         }
         
-        /// Returns the members endpoint for a specified user and guild
+        /// Returns the members endpoint for a specified User and Guld
         static func guildMembersEndpoint(guildID: String, userID: String) -> URL {
             self.guilds
                 .appendingPathComponent(guildID)

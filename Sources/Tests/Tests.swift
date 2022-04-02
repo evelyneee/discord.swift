@@ -128,4 +128,17 @@ final class Tests: XCTestCase {
         let exampleInvite = try getEnv("EXAMPLE_INVITE_CODE")
         try await bot.deleteInvite(inviteCode: exampleInvite)
     }
+    
+    func testFetchStickers() async throws {
+        let bot = try initBot()
+        let exampleGuild = try getEnv("EXAMPLE_GUILD_ID")
+        let stickers = try await bot.fetchStickers(guildID: exampleGuild)
+        if stickers.isEmpty {
+            print("guild has no stickers")
+        } else {
+            for sticker in stickers {
+                print("sticker: \(sticker)")
+            }
+        }
+    }
 }
