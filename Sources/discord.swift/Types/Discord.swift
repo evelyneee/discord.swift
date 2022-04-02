@@ -15,11 +15,26 @@ public enum Discord {
         static var users = root.appendingPathComponent("users")
         
         /// Returns the Guild Ban Endpoint for a specified user and guild
-        static func banEndpoint(guildID: String, userID: String) -> URL {
-            self.guilds
+        static func banEndpoint(guildID: String, userID: String? = nil) -> URL {
+            let url = self.guilds
                 .appendingPathComponent(guildID)
                 .appendingPathComponent("bans")
-                .appendingPathComponent(userID)
+            if let userID = userID {
+                return url.appendingPathComponent(userID)
+            }
+            
+            return url
+        }
+        
+        static func roleEndpoint(guildID: String, roleID: String? = nil) -> URL {
+            let url = guilds
+                .appendingPathComponent(guildID)
+                .appendingPathComponent("roles")
+            if let roleID = roleID {
+                return url.appendingPathComponent(roleID)
+            }
+            
+            return url
         }
         
         /// Returns the members endpoint for a specified user and guild

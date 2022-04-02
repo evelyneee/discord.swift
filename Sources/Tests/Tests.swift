@@ -75,4 +75,18 @@ final class Tests: XCTestCase {
         print("Banned user: \(banInfo.user)")
         print("Ban reason: \(banInfo.reason ?? "Unknown")")
     }
+    
+    func testFetchBans() async throws {
+        let bot = try initBot()
+        let exampleGuild = try getEnv("EXAMPLE_GUILD_ID")
+        let bans = try await bot.fetchBans(guilID: exampleGuild)
+        if bans.isEmpty {
+            print("Server has no bans")
+        } else {
+            print("Server bans: ")
+            for ban in bans {
+                print(ban)
+            }
+        }
+    }
 }
