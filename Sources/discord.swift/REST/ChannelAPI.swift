@@ -9,7 +9,24 @@ public extension Bot {
     func fetchChannel(id: String) async throws -> Discord.Channel {
         let channelURL = Discord.Endpoints.channels
             .appendingPathComponent(id)
-        let item = try await self.client.Request(with: channelURL, decodeTo: Discord.Channel.self)
-        return item
+        return try await self.client.Request(with: channelURL, decodeTo: Discord.Channel.self)
+    }
+    
+    /// Returns an Array of `Discord.Message` instances for
+    /// a specified Channel ID
+    func fetchMessages(channelID: String) async throws -> [Discord.Message] {
+        let url = Discord.Endpoints.channels
+            .appendingPathComponent(channelID)
+            .appendingPathComponent("messages")
+        return try await self.client.Request(with: url, decodeTo: [Discord.Message].self)
+    }
+    
+    /// Returns a `Discord.Message` instance for a specified Message ID & Channel ID
+    func fetchMessage(channelID: String, messageID: String) async throws -> Discord.Message {
+        let url = Discord.Endpoints.channels
+            .appendingPathComponent(channelID)
+            .appendingPathComponent("messages")
+            .appendingPathComponent(messageID)
+        return try await self.client.Request(with: url, decodeTo: Discord.Message.self)
     }
 }

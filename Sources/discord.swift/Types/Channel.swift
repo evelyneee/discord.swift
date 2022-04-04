@@ -64,4 +64,19 @@ extension Discord {
         case unknown4 = 14
         case unknown5 = 15
     }
+    
+    /// Represents a Channel mentioned.
+    /// See: https://discord.com/developers/docs/resources/channel#channel-mention-object
+    struct ChannelMention: Codable {
+        let id: String
+        let guildID: String
+        let type: ChannelType
+        let channelName: String
+        
+        enum CodingKeys: String, CodingKey {
+            case id, type
+            case guildID = "guild_id"
+            case channelName = "name"
+        }
+    }
 }

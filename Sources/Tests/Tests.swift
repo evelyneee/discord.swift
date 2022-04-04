@@ -141,4 +141,21 @@ final class Tests: XCTestCase {
             }
         }
     }
+    
+    func testFetchMessages() async throws {
+        let bot = try initBot()
+        let exampleChannel = try getEnv("EXAMPLE_CHANNEL_ID")
+        let messages = try await bot.fetchMessages(channelID: exampleChannel)
+        if messages.isEmpty {
+            print("no messages available :(")
+        } else {
+            for message in messages {
+                print("message content: \(message.content)")
+                print("channel ID: \(message.channelID)")
+                print("mentioned users: \(message.mentionedUsers)")
+                print("attachments: \(message.attachments)")
+                print("message type: \(message.type)")
+            }
+        }
+    }
 }
