@@ -158,4 +158,10 @@ final class Tests: XCTestCase {
             }
         }
     }
+    
+    func testDeleteChannel() async throws {
+        let bot = try initBot()
+        let exampleChannel = try getEnv("EXAMPLE_CHANNEL_ID")
+        try await bot.deleteChannel(id: exampleChannel)
+    }
 }

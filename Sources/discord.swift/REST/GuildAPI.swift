@@ -14,8 +14,7 @@ public extension Bot {
     /// Bans a user from a specified Guild
     func ban(userID: String, guildID: String, deleteMessageDays: Int = 0) async throws {
         let banURL = Discord.Endpoints.banEndpoint(guildID: guildID, userID: userID)
-        var request = URLRequest(url: banURL)
-        request.httpMethod = "PUT"
+        let request = URLRequest(withURL: banURL, httpMethod: "PUT")
         let params: [String: Any] = [
             "delete_message_days": deleteMessageDays
         ]
@@ -27,16 +26,14 @@ public extension Bot {
     func unban(userID: String, guildID: String) async throws {
         let banURL = Discord.Endpoints.banEndpoint(guildID: guildID)
             .appendingPathComponent(userID)
-        var request = URLRequest(url: banURL)
-        request.httpMethod = "DELETE"
+        let request = URLRequest(withURL: banURL, httpMethod: "DELETE")
         _ = try await self.client.Request(using: request)
     }
     
     /// Kicks a member from the specified Guild
     func kick(userID: String, guildID: String) async throws {
         let url = Discord.Endpoints.guildMembersEndpoint(guildID: guildID, userID: userID)
-        var request = URLRequest(url: url)
-        request.httpMethod = "DELETE"
+        let request = URLRequest(withURL: url, httpMethod: "DELETE")
         _ = try await self.client.Request(using: request)
     }
     
@@ -85,8 +82,7 @@ public extension Bot {
         if let unicodeEmoji = unicodeEmoji {
             params["unicode_emoji"] = unicodeEmoji
         }
-        var request = URLRequest(url: Discord.Endpoints.roleEndpoint(guildID: guildID))
-        request.httpMethod = "POST"
+        let request = URLRequest(withURL: Discord.Endpoints.roleEndpoint(guildID: guildID), httpMethod: "POST")
         let headers = ["Content-type": "application/json"]
         return try await self.client.Request(using: request, bodyObject: params, headers: headers, decodeTo: Discord.Role.self)
     }
@@ -94,8 +90,7 @@ public extension Bot {
     /// Sends a request to remove a specified Role
     func removeRole(guildID: String, roleID: String) async throws {
         let url = Discord.Endpoints.roleEndpoint(guildID: guildID, roleID: roleID)
-        var request = URLRequest(url: url)
-        request.httpMethod = "DELETE"
+        let request = URLRequest(withURL: url, httpMethod: "DELETE")
         _ = try await self.client.Request(using: request)
     }
     
@@ -111,8 +106,7 @@ public extension Bot {
     func deleteInvite(inviteCode: String) async throws {
         let url = Discord.Endpoints.invites
             .appendingPathComponent(inviteCode)
-        var request = URLRequest(url: url)
-        request.httpMethod = "DELETE"
+        var request = URLRequest(withURL: url, httpMethod: "DELETE")
         _ = try await self.client.Request(using: request)
     }
     
@@ -136,8 +130,7 @@ public extension Bot {
     /// Sends a Request to Discord to delete a specified Sticker
     func deleteSticker(guildID: String, stickerID: String) async throws {
         let url = Discord.Endpoints.guildStickerEndpoint(guildID: guildID, stickerID: stickerID)
-        var request = URLRequest(url: url)
-        request.httpMethod = "DELETE"
+        var request = URLRequest(withURL: url, httpMethod: "DELETE")
         _ = try await self.client.Request(using: request)
     }
 }

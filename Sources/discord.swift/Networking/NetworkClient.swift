@@ -8,8 +8,6 @@ final public class NetworkClient {
     init(_ token: String) {
         self.token = token
     }
-    
-    class AnyDecodable: Decodable {}
 
     enum NetworkErrors: Error, LocalizedError, CustomStringConvertible {
         case badResponseReturned(statusCode: Int, responseString: String?)

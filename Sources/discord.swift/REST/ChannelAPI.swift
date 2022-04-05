@@ -12,6 +12,15 @@ public extension Bot {
         return try await self.client.Request(with: channelURL, decodeTo: Discord.Channel.self)
     }
     
+    /// Sends a request to discord to delete a Channel.
+    func deleteChannel(id: String) async throws {
+        let channelDeleteURL = Discord.Endpoints.channels
+            .appendingPathComponent(id)
+        let request = URLRequest(withURL: channelDeleteURL, httpMethod: "DELETE")
+        _ = try await self.client.Request(using: request)
+    }
+    
+    
     /// Returns an Array of `Discord.Message` instances for
     /// a specified Channel ID
     func fetchMessages(channelID: String) async throws -> [Discord.Message] {
