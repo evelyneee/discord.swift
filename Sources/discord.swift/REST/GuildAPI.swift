@@ -106,16 +106,14 @@ public extension Bot {
     func deleteInvite(inviteCode: String) async throws {
         let url = Discord.Endpoints.invites
             .appendingPathComponent(inviteCode)
-        var request = URLRequest(withURL: url, httpMethod: "DELETE")
+        let request = URLRequest(withURL: url, httpMethod: "DELETE")
         _ = try await self.client.Request(using: request)
     }
     
     /// Returns an Array of `Discord.Sticker` instance
     /// belonging to the specified Guild
     func fetchStickers(guildID: String) async throws -> [Discord.Sticker] {
-        let url = Discord.Endpoints.guilds
-            .appendingPathComponent(guildID)
-            .appendingPathComponent("stickers")
+        let url = Discord.Endpoints.guildStickerEndpoint(guildID: guildID)
         return try await self.client.Request(with: url, decodeTo: [Discord.Sticker].self)
     }
     

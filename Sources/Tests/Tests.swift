@@ -165,4 +165,25 @@ final class Tests: XCTestCase {
         let exampleChannel = try getEnv("EXAMPLE_CHANNEL_ID")
         try await bot.deleteChannel(id: exampleChannel)
     }
+    
+    func testFetchEmotes() async throws {
+        let bot = try initBot()
+        let exampleGuild = try getEnv("EXAMPLE_GUILD_ID")
+        let emotes = try await bot.fetchEmotes(guildID: exampleGuild)
+        for emote in emotes {
+            print("emote name: \(emote.name ?? "unknown")")
+            print("emote id: \(emote.id ?? "unknown")")
+            print("emote is animated: \(emote.isAnimated ?? false)")
+            print("emote is available: \(emote.isAvailable ?? false)")
+            print()
+        }
+    }
+    
+    func testFetchEmote() async throws {
+        let bot = try initBot()
+        let exampleGuild = try getEnv("EXAMPLE_GUILD_ID")
+        let exampleEmote = try getEnv("EXAMPLE_EMOTE_ID")
+        let emote = try await bot.fetchEmote(guildID: exampleGuild, emoteID: exampleEmote)
+        print("emote: \(emote)")
+    }
 }

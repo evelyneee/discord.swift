@@ -27,12 +27,31 @@ public enum Discord {
             return url
         }
         
-        /// Returns the Sticker Endpoint for a specified Guild and StickerID
-        static func guildStickerEndpoint(guildID: String, stickerID: String) -> URL {
-            return guilds
+        /// Returns the Emotes Endpoint for a specified Guild
+        /// and for a Emote ID, if specified
+        static func guildEmotesEndpoint(guildID: String, emoteID: String? = nil) -> URL {
+            let url = self.guilds
+                .appendingPathComponent(guildID)
+                .appendingPathComponent("emojis")
+            if let emoteID = emoteID {
+                return url.appendingPathComponent(emoteID)
+            }
+            
+            return url
+        }
+        
+        /// Returns the Sticker Endpoint for a specified Guild
+        /// and for a Sticker ID, if specified
+        static func guildStickerEndpoint(guildID: String, stickerID: String? = nil) -> URL {
+            let url = guilds
                 .appendingPathComponent(guildID)
                 .appendingPathComponent("stickers")
-                .appendingPathComponent(stickerID)
+            
+            if let stickerID = stickerID {
+                return url.appendingPathComponent(stickerID)
+            }
+            
+            return url
         }
         
         /// Returns the Role Endpoint for a specified Guild
