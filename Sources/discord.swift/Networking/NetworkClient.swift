@@ -18,7 +18,7 @@ final public class NetworkClient {
             case .badResponseReturned(let statusCode, let responseString):
                 return "Server unexpectadly returned status code \(statusCode) (should be between 200 and 299)\nResponse: \(responseString ?? "Unavailable")"
             case .discordError(let discordErr):
-                return "Discord unexpectadly returned an error\nError Code: \(discordErr.code)\nError Messsage: \(discordErr.message)"
+                return "Discord unexpectedly returned an error\nError Code: \(discordErr.code)\nError Messsage: \(discordErr.message)"
             }
         }
         

@@ -46,9 +46,15 @@ public extension Discord {
         /// Whether this message is pinned
         let isPinned: Bool
         
+        /// The Embeds in the message
+        let embeds: [Embed]
+        
+        /// The Activity in the Message, if one is present
+        let activity: MessageActivity?
+        
         //TODO: - the rest of the variables, see https://discord.com/developers/docs/resources/channel#message-object
         enum CodingKeys: String, CodingKey {
-            case id, author, content, timestamp, attachments, type
+            case id, author, content, timestamp, attachments, type, embeds, activity
             case channelID = "channel_id"
             case guildID = "guild_id"
             case editedTimestamp = "edited_timestamp"
@@ -87,5 +93,24 @@ public extension Discord {
         case threadStarterMessage = 21
         case guildInviteReminder = 22
         case contextMenuCommand = 23
+    }
+    
+    /// The types of Message Activities on Discord
+    enum MessageActivityTypes: Int, Codable {
+        case join = 1
+        case spectate = 2
+        case listen = 3
+        case joinRequest = 5
+    }
+    
+    /// Represents a Discord Message Activity
+    struct MessageActivity: Codable {
+        let type: MessageActivityTypes
+        let partyID: String?
+        
+        enum CodingKeys: String, CodingKey {
+            case type
+            case partyID = "party_id"
+        }
     }
 }

@@ -155,6 +155,7 @@ final class Tests: XCTestCase {
                 print("mentioned users: \(message.mentionedUsers)")
                 print("attachments: \(message.attachments)")
                 print("message type: \(message.type)")
+                print("message embds: \(message.embeds)")
             }
         }
     }

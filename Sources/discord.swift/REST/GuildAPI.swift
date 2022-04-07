@@ -132,7 +132,6 @@ public extension Bot {
         let url = Discord.Endpoints.guildStickerEndpoint(guildID: guildID, stickerID: stickerID)
         let request = URLRequest(withURL: url, httpMethod: "DELETE")
         _ = try await self.client.Request(using: request)
-        
     }
 }
 

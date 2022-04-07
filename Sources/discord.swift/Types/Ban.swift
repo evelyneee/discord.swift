@@ -3,6 +3,7 @@ public extension Discord {
     struct Ban: Decodable {
         /// The reason for the ban
         let reason: String?
+        /// The banned user
         let user: Discord.User
     }
 }
