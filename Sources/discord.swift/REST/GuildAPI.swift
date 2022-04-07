@@ -130,8 +130,9 @@ public extension Bot {
     /// Sends a Request to Discord to delete a specified Sticker
     func deleteSticker(guildID: String, stickerID: String) async throws {
         let url = Discord.Endpoints.guildStickerEndpoint(guildID: guildID, stickerID: stickerID)
-        var request = URLRequest(withURL: url, httpMethod: "DELETE")
+        let request = URLRequest(withURL: url, httpMethod: "DELETE")
         _ = try await self.client.Request(using: request)
+        
     }
 }
 

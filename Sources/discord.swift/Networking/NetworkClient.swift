@@ -67,19 +67,21 @@ final public class NetworkClient {
         with url: URL,
         bodyObject: [String: Any]? = nil,
         headers: [AnyHashable: Any] = [:],
-        decodeTo type: T.Type
+        decodeTo type: T.Type,
+        decoder: JSONDecoder = JSONDecoder()
     ) async throws -> T {
-        return try await Request(using: URLRequest(url: url), bodyObject: bodyObject, headers: headers, decodeTo: type)
+        return try await Request(using: URLRequest(url: url), bodyObject: bodyObject, headers: headers, decodeTo: type, decoder: decoder)
     }
     
     func Request<T: Decodable>(
         using request: URLRequest,
         bodyObject: [String: Any]? = nil,
         headers: [AnyHashable: Any] = [:],
-        decodeTo type: T.Type
+        decodeTo type: T.Type,
+        decoder: JSONDecoder = JSONDecoder()
     ) async throws -> T {
         let data = try await self.Request(using: request, bodyObject: bodyObject, headers: headers)
-        return try JSONDecoder().decode(type, from: data)
+        return try decoder.decode(type, from: data)
     }
     
     func fetch(
