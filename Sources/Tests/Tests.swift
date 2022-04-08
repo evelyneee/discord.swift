@@ -40,6 +40,10 @@ final class Tests: XCTestCase {
         if let approxOnlineCount = guild.approxPresenceCount {
             print("Guild online users count: \(approxOnlineCount)")
         }
+        
+        if let iconURL = guild.iconPictureURL() {
+            print("Guild Icon URL: \(iconURL)")
+        }
     }
     
     func testExampleUser() async throws {
@@ -50,6 +54,13 @@ final class Tests: XCTestCase {
         print("User discriminator: \(userDetails.discriminator)")
         print("User verified email: \(userDetails.hasVerifiedEmail ?? true)")
         print("User bio: \(userDetails.bio ?? "unavailable")")
+        if let pfpURL = userDetails.profilePictureURL() {
+            print("pfpURL: \(pfpURL)")
+        }
+        
+        if let bannerURL = userDetails.bannerPictureURL() {
+            print("Banner Image URL: \(bannerURL)")
+        }
     }
     
     func testBanUser() async throws {

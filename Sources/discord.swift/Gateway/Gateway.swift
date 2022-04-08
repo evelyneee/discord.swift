@@ -49,7 +49,7 @@ final public class Gateway {
 
     
     lazy var socket: WebSocket = {
-        let request = URLRequest(url: Discord.Endpoints.gateway)
+        let request = URLRequest(url: Discord.APIEndpoints.gateway)
         return WebSocket(request: request)
     }()
     

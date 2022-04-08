@@ -11,7 +11,7 @@ public extension Bot {
     ///   - withExpiration: Whether the `Discord.Invite` object returnd should inclue the Expiration Date
     /// - Returns: A `Discord.Invite` instance.
     func fetchInviteInformation(inviteCode: String, withCounts: Bool = true, withExpiriation: Bool = true) async throws -> Discord.Invite {
-        let url = Discord.Endpoints.invites
+        let url = Discord.APIEndpoints.invites
             .appendingPathComponent(inviteCode)
         let body = [
             "with_counts": "\(withCounts)",
@@ -27,7 +27,7 @@ public extension Bot {
     
     /// Sends a Request to discord to delete the specified invite
     func deleteInvite(inviteCode: String) async throws {
-        let url = Discord.Endpoints.invites
+        let url = Discord.APIEndpoints.invites
             .appendingPathComponent(inviteCode)
         let request = URLRequest(withURL: url, httpMethod: "DELETE")
         _ = try await self.client.Request(using: request)

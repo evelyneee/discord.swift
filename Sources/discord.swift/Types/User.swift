@@ -49,3 +49,28 @@ extension Discord {
         case nitro = 2
     }
 }
+
+public extension Discord.User {
+    /// Returns the full URL to the user's Profile Picture
+    func profilePictureURL(imageFormat: Discord.CDNFormats = .png) -> URL? {
+        guard let avatarHash = avatarHash else {
+            return nil
+        }
+        
+        return Discord.CDNEndpoints.avatars
+            .appendingPathComponent(self.id)
+            .appendingPathComponent(avatarHash)
+            .appendingPathExtension(imageFormat.fileExtenstion)
+    }
+    
+    func bannerPictureURL(imageFormat: Discord.CDNFormats = .png) -> URL? {
+        guard let bannerHash = self.banner else {
+            return nil
+        }
+        
+        return Discord.CDNEndpoints.banners
+            .appendingPathComponent(self.id)
+            .appendingPathComponent(bannerHash)
+            .appendingPathExtension(imageFormat.fileExtenstion)
+    }
+}

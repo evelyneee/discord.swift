@@ -2,7 +2,33 @@
 import Foundation
 
 public enum Discord {
-    public enum Endpoints {
+    /// The formats allowed to be used when requesting an item from Discord's CDN
+    public enum CDNFormats {
+        case jpeg, jpg
+        case png
+        case webp
+        case gif
+        case lottie
+        
+        public var fileExtenstion: String {
+            switch self {
+            case .jpeg:
+                return "jpeg"
+            case .jpg:
+                return "jpg"
+            case .png:
+                return "png"
+            case .webp:
+                return "webp"
+            case .gif:
+                return "gif"
+            case .lottie:
+                return "json"
+            }
+        }
+    }
+    
+    public enum APIEndpoints {
         static private var base = "https://discord.com/api/"
         static private var version = "v10"
         static var root = URL(string: base + version)!
@@ -74,5 +100,15 @@ public enum Discord {
                 .appendingPathComponent("members")
                 .appendingPathComponent(userID)
         }
+    }
+}
+
+public extension Discord {
+    /// Represents the Endpoints for Discord's CDN
+    enum CDNEndpoints {
+        static var base = URL(string: "https://cdn.discordapp.com/")!
+        static var icons = base.appendingPathComponent("icons")
+        static var banners = base.appendingPathComponent("banners")
+        static var avatars = base.appendingPathComponent("avatars")
     }
 }
