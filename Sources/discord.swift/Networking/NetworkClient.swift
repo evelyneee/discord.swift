@@ -12,6 +12,7 @@ final public class NetworkClient {
     enum NetworkErrors: Error, LocalizedError, CustomStringConvertible {
         case badResponseReturned(statusCode: Int, responseString: String?)
         case discordError(DiscordError)
+        case unableToEncodeURL
         
         var description: String {
             switch self {
@@ -19,6 +20,8 @@ final public class NetworkClient {
                 return "Server unexpectadly returned status code \(statusCode) (should be between 200 and 299)\nResponse: \(responseString ?? "Unavailable")"
             case .discordError(let discordErr):
                 return "Discord unexpectedly returned an error\nError Code: \(discordErr.code)\nError Messsage: \(discordErr.message)"
+            case .unableToEncodeURL:
+                return "Unable to Encode URL"
             }
         }
         
@@ -137,6 +140,19 @@ final public class NetworkClient {
         
         body.append("--\(boundary)--\r\n")
         return body
+    }
+    
+    func EncodeURL(_ url: URL, with parameters: [String: String]) throws -> URL {
+        var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        components?.queryItems = parameters.map {
+            URLQueryItem(name: $0.key, value: $0.value)
+        }
+        
+        guard let finalURL = components?.url else {
+            throw NetworkErrors.unableToEncodeURL
+        }
+        
+        return finalURL
     }
 }
 

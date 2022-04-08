@@ -6,9 +6,10 @@ public extension Bot {
         return try await self.client.Request(with: Discord.Endpoints.myGuilds, decodeTo: [Discord.Guild].self)
     }
     
-    func fetchGuild(id: String) async throws -> Discord.Guild {
+    func fetchGuild(id: String, withCounts: Bool = true) async throws -> Discord.Guild {
         let guildURL = Discord.Endpoints.guilds.appendingPathComponent(id)
-        return try await self.client.Request(with: guildURL, decodeTo: Discord.Guild.self)
+        let encodedURL = try self.client.EncodeURL(guildURL, with: ["with_counts": "\(withCounts)"])
+        return try await self.client.Request(with: encodedURL, decodeTo: Discord.Guild.self)
     }
     
     /// Bans a user from a specified Guild
@@ -90,22 +91,6 @@ public extension Bot {
     /// Sends a request to remove a specified Role
     func removeRole(guildID: String, roleID: String) async throws {
         let url = Discord.Endpoints.roleEndpoint(guildID: guildID, roleID: roleID)
-        let request = URLRequest(withURL: url, httpMethod: "DELETE")
-        _ = try await self.client.Request(using: request)
-    }
-    
-    /// Returns information about a specified Invite
-    /// in the form of a `Discord.Invite` instance
-    func fetchInviteInformation(inviteCode: String) async throws -> Discord.Invite {
-        let url = Discord.Endpoints.invites
-            .appendingPathComponent(inviteCode)
-        return try await self.client.Request(with: url, decodeTo: Discord.Invite.self)
-    }
-    
-    /// Sends a Request to discord to delete the specified invite
-    func deleteInvite(inviteCode: String) async throws {
-        let url = Discord.Endpoints.invites
-            .appendingPathComponent(inviteCode)
         let request = URLRequest(withURL: url, httpMethod: "DELETE")
         _ = try await self.client.Request(using: request)
     }

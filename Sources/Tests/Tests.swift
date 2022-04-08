@@ -34,6 +34,12 @@ final class Tests: XCTestCase {
         print("Guild id: \(guild.id)")
         print("Guild Description: \(guild.description ?? "Unavailable")")
         print("Guild vanity URL: \(guild.vanityURLCode ?? "Unavailable")")
+        if let approxMemberCount = guild.approxMemberCount {
+            print("Guild member count: \(approxMemberCount)")
+        }
+        if let approxOnlineCount = guild.approxPresenceCount {
+            print("Guild online users count: \(approxOnlineCount)")
+        }
     }
     
     func testExampleUser() async throws {
@@ -119,8 +125,19 @@ final class Tests: XCTestCase {
     func testFetchInviteInfo() async throws {
         let bot = try initBot()
         let exampleInvite = try getEnv("EXAMPLE_INVITE_CODE")
-        let codeInfo = try await bot.fetchInviteInformation(inviteCode: exampleInvite)
-        print("Example invite: \(codeInfo)")
+        let inviteFetched = try await bot.fetchInviteInformation(inviteCode: exampleInvite)
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        
+        print("Invite Code: \(inviteFetched.inviteCode)")
+        print("Expiration Date: \(formatter.string(from: inviteFetched.expirationDate))")
+        
+        if let channel = inviteFetched.channel {
+            print("Invite channel: \(channel)")
+        }
+        if let guild = inviteFetched.guild {
+            print("Invite Guild: \(guild)")
+        }
     }
     
     func testDeleteInvite() async throws {

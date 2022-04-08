@@ -30,9 +30,9 @@ public extension Discord {
         var iconURL: String?
         var iconHash: String?
         var owner: Bool?
-        var ownerID: String
+        var ownerID: String?
         var roles: [Role]?
-        var mfaLevel: Int
+        var mfaLevel: Int?
         var isLarge: Bool?
         var isUnavailable: Bool?
         var memberCount: Int?
