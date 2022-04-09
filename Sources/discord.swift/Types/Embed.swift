@@ -7,7 +7,7 @@ public extension Discord {
         let type: EmbedType
         let description: String?
         let url: String?
-        let color: Int
+        let color: Int?
         let footer: EmbedFooter?
         let image: EmbedMedia?
         let thumbnail: EmbedMedia?
