@@ -77,6 +77,13 @@ final class Tests: XCTestCase {
         try await bot.unban(userID: userID, guildID: exampleGuild)
     }
     
+    func testDeleteMessage() async throws {
+        let bot = try initBot()
+        let exampleChannel = try getEnv("EXAMPLE_CHANNEL_ID")
+        let exampleMessage = try getEnv("EXAMPLE_MESSAGE_ID")
+        try await bot.deleteMessage(channelID: exampleChannel, messageID: exampleMessage)
+    }
+    
     func testKickUser() async throws {
         let bot = try initBot()
         let userID = try getEnv("EXAMPLE_USER_ID")
@@ -178,7 +185,7 @@ final class Tests: XCTestCase {
             print("no messages available :(")
         } else {
             for message in messages {
-                print("message content: \(message.content)")
+                print("message content: \(message.content ?? "unavailable")")
                 print("channel ID: \(message.channelID)")
                 print("mentioned users: \(message.mentionedUsers)")
                 print("attachments: \(message.attachments)")

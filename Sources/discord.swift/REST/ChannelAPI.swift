@@ -38,4 +38,12 @@ public extension Bot {
             .appendingPathComponent(messageID)
         return try await self.client.Request(with: url, decodeTo: Discord.Message.self)
     }
+    
+    func deleteMessage(channelID: String, messageID: String) async throws {
+        let url = Discord.APIEndpoints.channels
+            .appendingPathComponent(channelID)
+            .appendingPathComponent("messages")
+            .appendingPathComponent(messageID)
+        _ = try await self.client.Request(using: URLRequest(withURL: url, httpMethod: "DELETE"))
+    }
 }

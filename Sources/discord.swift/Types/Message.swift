@@ -2,7 +2,7 @@ public extension Discord {
     /// Represents a Message sent in a Discord Channel
     struct Message: Decodable {
         /// The Message ID
-        let id: String
+        let id: String?
         
         /// The ID of the Channel where the message was sent in
         let channelID: String
@@ -14,7 +14,7 @@ public extension Discord {
         let author: User?
         
         /// The Contents of the message, in String
-        let content: String
+        let content: String?
         
         /// The time this message was sent, in String
         let timestamp: String
