@@ -39,6 +39,28 @@ public extension Bot {
         return try await self.client.request(with: url, decodeTo: Discord.Message.self)
     }
     
+    /// Returns an Array of `Discord.Message` instances
+    /// of Pinned messages for a specified Channel
+    func fetchPinnedMessages(channelID: String) async throws -> [Discord.Message] {
+        let url = Discord.APIEndpoints.channelPinsEndpoint(channelID: channelID)
+        return try await self.client.request(with: url, decodeTo: [Discord.Message].self)
+    }
+    
+    //TODO: - merge pin and unpin functions to one function, and have the client specify to either pin / unpin in the parameters
+    
+    /// Sends a request to discord to pin a specified message
+    func pin(messageID: String, channelID: String) async throws {
+        let url = Discord.APIEndpoints.channelPinsEndpoint(channelID: channelID, messageID: messageID)
+        let request = URLRequest(withURL: url, httpMethod: "PUT")
+        _ = try await self.client.request(using: request)
+    }
+    
+    func unpin(messageID: String, channelID: String) async throws {
+        let url = Discord.APIEndpoints.channelPinsEndpoint(channelID: channelID, messageID: messageID)
+        let request = URLRequest(withURL: url, httpMethod: "DELETE")
+        _ = try await self.client.request(using: request)
+    }
+    
     func sendMessage(channelID: String, content: String) async throws -> Discord.Message {
         let url = Discord.APIEndpoints.channels
             .appendingPathComponent(channelID)

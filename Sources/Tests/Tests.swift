@@ -228,4 +228,18 @@ final class Tests: XCTestCase {
         let emote = try await bot.fetchEmote(guildID: exampleGuild, emoteID: exampleEmote)
         print("emote: \(emote)")
     }
+    
+    func testPinOrUnpinMessage() async throws {
+        let bot = try initBot()
+        let exampleChannel = try getEnv("EXAMPLE_CHANNEL_ID")
+        let exampleMessage = try getEnv("EXAMPLE_MESSAGE_ID")
+        let pinAction = (try? getEnv("PIN_ACTION")) ?? "pin"
+        
+        if pinAction.lowercased() == "pin" {
+            try await bot.pin(messageID: exampleMessage, channelID: exampleChannel)
+        } else {
+            try await bot.unpin(messageID: exampleMessage, channelID: exampleChannel)
+        }
+    }
+    
 }

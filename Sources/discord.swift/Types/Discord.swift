@@ -100,6 +100,20 @@ public enum Discord {
                 .appendingPathComponent("members")
                 .appendingPathComponent(userID)
         }
+        
+        /// Returns the Pinned Messages Endpoint for a specified Channel
+        /// and a Message, if specified
+        static func channelPinsEndpoint(channelID: String, messageID: String? = nil) -> URL {
+            let url = self.channels
+                .appendingPathComponent(channelID)
+                .appendingPathComponent("pins")
+            
+            if let messageID = messageID {
+                return url.appendingPathComponent(messageID)
+            }
+            
+            return url
+        }
     }
 }
 
