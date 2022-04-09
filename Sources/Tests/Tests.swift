@@ -84,6 +84,13 @@ final class Tests: XCTestCase {
         try await bot.deleteMessage(channelID: exampleChannel, messageID: exampleMessage)
     }
     
+    func testCreateInvite() async throws {
+        let bot = try initBot()
+        let exampleChannel = try getEnv("EXAMPLE_CHANNEL_ID")
+        let returnedInvite = try await bot.createInvite(channelID: exampleChannel)
+        print("returned invite: \(returnedInvite)")
+    }
+    
     func testKickUser() async throws {
         let bot = try initBot()
         let userID = try getEnv("EXAMPLE_USER_ID")

@@ -32,4 +32,29 @@ public extension Bot {
         let request = URLRequest(withURL: url, httpMethod: "DELETE")
         _ = try await self.client.request(using: request)
     }
+    
+    /// Sends a Reques to Discord to create an invite and returns the created Invite
+    func createInvite(
+        channelID: String,
+        maxAgeInSeconds maxAge: Int = 86400,
+        maxUsesAllowed maxUses: Int? = nil,
+        onlyGrantTemporaryMembership temporary: Bool = false,
+        makeUnique unique: Bool = false
+    ) async throws -> Discord.Invite {
+        let url = Discord.APIEndpoints.channels
+            .appendingPathComponent(channelID)
+            .appendingPathComponent("invites")
+        var jsonParams: [String: Any] = [
+            "max_age": maxAge,
+            "temporary": temporary,
+            "unique": unique
+        ]
+        
+        if let maxUses = maxUses {
+            jsonParams["max_uses"] = maxUses
+        }
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try await self.client.request(using: URLRequest(withURL: url, httpMethod: "POST"), bodyObject: jsonParams, decodeTo: Discord.Invite.self, decoder: decoder)
+    }
 }

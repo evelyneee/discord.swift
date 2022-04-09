@@ -35,8 +35,6 @@ public extension Discord {
         /// Whether this invite only includes Temporary Membership
         let grantsTemporaryMembership: Bool?
         
-        /// The Creation Date of this invite
-        let createdAt: Date?
         
         enum CodingKeys: String, CodingKey {
             case inviter, guild, channel
@@ -47,7 +45,6 @@ public extension Discord {
             case usesCount = "uses"
             case maxUsesAllowed = "max_uses"
             case grantsTemporaryMembership = "temporary"
-            case createdAt = "created_at"
         }
     }
 }
