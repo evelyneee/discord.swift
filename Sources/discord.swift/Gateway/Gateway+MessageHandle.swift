@@ -102,6 +102,11 @@ extension Gateway {
             let d = packet?["d"] as? [String:Any]
             let sessionID = d?["session_id"] as? String
             self.sessionID = sessionID
+            Task.detached {
+                if let onConnect = self.onConnect {
+                    try await onConnect()
+                }
+            }
             log(event.data)
         default: break
         }
