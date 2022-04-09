@@ -52,6 +52,6 @@ public extension Bot {
             .appendingPathComponent(channelID)
             .appendingPathComponent("messages")
             .appendingPathComponent(messageID)
-        _ = try await self.client.Request(using: URLRequest(withURL: url, httpMethod: "DELETE"))
+        _ = try await self.client.request(using: URLRequest(withURL: url, httpMethod: "DELETE"))
     }
 }
