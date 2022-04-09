@@ -54,4 +54,20 @@ public extension Bot {
             .appendingPathComponent(messageID)
         _ = try await self.client.request(using: URLRequest(withURL: url, httpMethod: "DELETE"))
     }
+    
+    /// Sends a Request to Discord to bulk-delete the specified messages
+    /// - Parameters:
+    ///   - channelID: The Channel from which to delete the messages
+    ///   - messageIDs: An array of Message IDs to delete
+    func bulkDeleteMessages(channelID: String, messageIDs: [String]) async throws {
+        //TODO: - move this URL to APIEndpoints enum
+        let url = Discord.APIEndpoints.channels
+            .appendingPathComponent(channelID)
+            .appendingPathComponent("messages")
+            .appendingPathComponent("bulk-delete")
+        let jsonParams: [String: Any] = [
+            "messages": messageIDs
+        ]
+        _ = try await self.client.request(using: URLRequest(withURL: url, httpMethod: "POST"), bodyObject: jsonParams)
+    }
 }
