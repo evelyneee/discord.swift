@@ -46,7 +46,8 @@ final public class Gateway {
     internal var seq: Int = 0
     internal var sessionID: String?
     internal var intents: Discord.Intents = []
-
+    
+    public var onConnect: (() async throws -> Void)?
     
     lazy var socket: WebSocket = {
         let request = URLRequest(url: Discord.APIEndpoints.gateway)

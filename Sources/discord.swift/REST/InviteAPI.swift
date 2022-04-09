@@ -22,7 +22,7 @@ public extension Bot {
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        return try await self.client.Request(with: encodedURL, decodeTo: Discord.Invite.self, decoder: decoder)
+        return try await self.client.request(with: encodedURL, decodeTo: Discord.Invite.self, decoder: decoder)
     }
     
     /// Sends a Request to discord to delete the specified invite
@@ -30,6 +30,6 @@ public extension Bot {
         let url = Discord.APIEndpoints.invites
             .appendingPathComponent(inviteCode)
         let request = URLRequest(withURL: url, httpMethod: "DELETE")
-        _ = try await self.client.Request(using: request)
+        _ = try await self.client.request(using: request)
     }
 }

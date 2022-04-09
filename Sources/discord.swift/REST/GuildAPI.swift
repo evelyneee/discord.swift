@@ -3,13 +3,13 @@ import Foundation
 
 public extension Bot {
     func fetchGuilds() async throws -> [Discord.Guild] {
-        return try await self.client.Request(with: Discord.APIEndpoints.myGuilds, decodeTo: [Discord.Guild].self)
+        return try await self.client.request(with: Discord.APIEndpoints.myGuilds, decodeTo: [Discord.Guild].self)
     }
     
     func fetchGuild(id: String, withCounts: Bool = true) async throws -> Discord.Guild {
         let guildURL = Discord.APIEndpoints.guilds.appendingPathComponent(id)
         let encodedURL = try self.client.EncodeURL(guildURL, with: ["with_counts": "\(withCounts)"])
-        return try await self.client.Request(with: encodedURL, decodeTo: Discord.Guild.self)
+        return try await self.client.request(with: encodedURL, decodeTo: Discord.Guild.self)
     }
     
     /// Bans a user from a specified Guild
@@ -23,7 +23,7 @@ public extension Bot {
         if let reason = reason {
             params["reason"] = reason
         }
-        _ = try await self.client.Request(using: request, bodyObject: params, headers: ["Content-type": "application/json"])
+        _ = try await self.client.request(using: request, bodyObject: params, headers: ["Content-type": "application/json"])
     }
     
     /// Unbans a user from the specified Guild
@@ -31,32 +31,32 @@ public extension Bot {
         let banURL = Discord.APIEndpoints.banEndpoint(guildID: guildID)
             .appendingPathComponent(userID)
         let request = URLRequest(withURL: banURL, httpMethod: "DELETE")
-        _ = try await self.client.Request(using: request)
+        _ = try await self.client.request(using: request)
     }
     
     /// Kicks a member from the specified Guild
     func kick(userID: String, guildID: String) async throws {
         let url = Discord.APIEndpoints.guildMembersEndpoint(guildID: guildID, userID: userID)
         let request = URLRequest(withURL: url, httpMethod: "DELETE")
-        _ = try await self.client.Request(using: request)
+        _ = try await self.client.request(using: request)
     }
     
     /// Returns a `Discord.Ban` instance detailing ban information
     /// about a banned member
     func fetchBanInformation(userID: String, guildID: String) async throws -> Discord.Ban {
         let url = Discord.APIEndpoints.banEndpoint(guildID: guildID, userID: userID)
-        return try await self.client.Request(with: url, decodeTo: Discord.Ban.self)
+        return try await self.client.request(with: url, decodeTo: Discord.Ban.self)
     }
     
     /// Returns an Array of `Discord.Ban` instances for a specified Guild
     func fetchBans(guilID: String) async throws -> [Discord.Ban] {
-        return try await self.client.Request(with: Discord.APIEndpoints.banEndpoint(guildID: guilID), decodeTo: [Discord.Ban].self)
+        return try await self.client.request(with: Discord.APIEndpoints.banEndpoint(guildID: guilID), decodeTo: [Discord.Ban].self)
     }
     
     /// Returns an Array of `Discord.Roles` instances belonging to a specified Guild
     func fetchRoles(guildID: String) async throws -> [Discord.Role] {
         let url = Discord.APIEndpoints.roleEndpoint(guildID: guildID, roleID: nil)
-        return try await self.client.Request(with: url, decodeTo: [Discord.Role].self)
+        return try await self.client.request(with: url, decodeTo: [Discord.Role].self)
     }
     
     /// Sends a request to Discord to create a role, and returns the Role created
@@ -88,14 +88,14 @@ public extension Bot {
         }
         let request = URLRequest(withURL: Discord.APIEndpoints.roleEndpoint(guildID: guildID), httpMethod: "POST")
         let headers = ["Content-type": "application/json"]
-        return try await self.client.Request(using: request, bodyObject: params, headers: headers, decodeTo: Discord.Role.self)
+        return try await self.client.request(using: request, bodyObject: params, headers: headers, decodeTo: Discord.Role.self)
     }
     
     /// Sends a request to remove a specified Role
     func removeRole(guildID: String, roleID: String) async throws {
         let url = Discord.APIEndpoints.roleEndpoint(guildID: guildID, roleID: roleID)
         let request = URLRequest(withURL: url, httpMethod: "DELETE")
-        _ = try await self.client.Request(using: request)
+        _ = try await self.client.request(using: request)
     }
 }
 

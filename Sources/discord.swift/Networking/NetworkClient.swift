@@ -32,20 +32,21 @@ final public class NetworkClient {
     // MARK: - Perform request with completion handler
 
     /// Makes a Request using the specifed `URL` and returns the raw data
-    func Request(with url: URL, bodyObject: [String: Any]? = nil, headers: [AnyHashable: Any] = [:]) async throws -> Data {
-        try await self.Request(using: URLRequest(url: url))
+    func request(with url: URL, bodyObject: [String: Any]? = nil, headers: [AnyHashable: Any] = [:]) async throws -> Data {
+        try await self.request(using: URLRequest(url: url))
     }
     
     /// Makes a Request using the specified `URLRequest`, and returns the raw data
-    func Request(using req: URLRequest, bodyObject: [String: Any]? = nil, headers: [AnyHashable: Any] = [:]) async throws -> Data {
+    func request(using req: URLRequest, bodyObject: [String: Any]? = nil, headers: [AnyHashable: Any] = [:]) async throws -> Data {
         var request = req
         
         if request.url?.absoluteString.contains("https://discord.com/api") ?? false {
-            request.addValue(self.token, forHTTPHeaderField: "Authorization")
+            request.addValue("Bot "+self.token, forHTTPHeaderField: "Authorization")
         }
         
         if let bodyObject = bodyObject  {
             let body = try JSONSerialization.data(withJSONObject: bodyObject, options: [])
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpBody = body
         }
         
@@ -66,28 +67,28 @@ final public class NetworkClient {
         return data
     }
     
-    func Request<T: Decodable>(
+    func request<T: Decodable>(
         with url: URL,
         bodyObject: [String: Any]? = nil,
         headers: [AnyHashable: Any] = [:],
         decodeTo type: T.Type,
         decoder: JSONDecoder = JSONDecoder()
     ) async throws -> T {
-        return try await Request(using: URLRequest(url: url), bodyObject: bodyObject, headers: headers, decodeTo: type, decoder: decoder)
+        return try await request(using: URLRequest(url: url), bodyObject: bodyObject, headers: headers, decodeTo: type, decoder: decoder)
     }
     
-    func Request<T: Decodable>(
+    func request<T: Decodable>(
         using request: URLRequest,
         bodyObject: [String: Any]? = nil,
         headers: [AnyHashable: Any] = [:],
         decodeTo type: T.Type,
         decoder: JSONDecoder = JSONDecoder()
     ) async throws -> T {
-        let data = try await self.Request(using: request, bodyObject: bodyObject, headers: headers)
+        let data = try await self.request(using: request, bodyObject: bodyObject, headers: headers)
         return try decoder.decode(type, from: data)
     }
     
-    func fetch(
+    func multipartRequest(
         url: URL,
         with payloadJson: [String:Any]? = nil,
         fileURL: String? = nil,

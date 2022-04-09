@@ -11,6 +11,8 @@ public class Bot {
     public var gateway: Gateway
     public let client: NetworkClient
     
+    public var onConnect: (() async throws -> Void)?
+    
     // Initialize client from token
     public init (_ token: String, intents: Discord.Intents = []) {
         self.token = token
@@ -28,6 +30,7 @@ public class Bot {
     public func connect() async throws {
         self.gateway.socket.onEvent = gateway.handleEvent(_:)
         self.gateway.socket.connect()
+        self.gateway.onConnect = self.onConnect
     }
     
 }
