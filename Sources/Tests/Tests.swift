@@ -242,4 +242,34 @@ final class Tests: XCTestCase {
         }
     }
     
+    func testSendMessage() async throws {
+        let bot = try initBot()
+        let exampleChannel = try getEnv("EXAMPLE_CHANNEL_ID")
+        let returnedMessage = try await bot.sendMessage(channelID: exampleChannel, content: "another msg!")
+        print("returned message: \(returnedMessage)")
+    }
+    
+    func testCreateThread() async throws {
+        let bot = try initBot()
+        let exampleChannel = try getEnv("EXAMPLE_CHANNEL_ID")
+        let exampleMessage = try? getEnv("EXAMPLE_MESSAGE_ID")
+        let name = (try? getEnv("EXAMPLE_THREAD_NAME")) ?? "Some thread"
+        
+        let createdThread = try await bot.createThread(fromMessage: exampleMessage, channelID: exampleChannel, threadName: name)
+        print("created thread: \(createdThread)")
+    }
+    
+    func testAddUserToThread() async throws {
+        let bot = try initBot()
+        let exampleThread = try getEnv("EXAMPLE_CHANNEL_ID")
+        let exampleUser = (try? getEnv("EXAMPLE_USER_ID")) ?? "@me"
+        try await bot.addMemberToThread(threadID: exampleThread, userID: exampleUser)
+    }
+    
+    func testRemoveUserFromThread() async throws {
+        let bot = try initBot()
+        let exampleThread = try getEnv("EXAMPLE_CHANNEL_ID")
+        let exampleUser = (try? getEnv("EXAMPLE_USER_ID")) ?? "@me"
+        try await bot.removeUserFromThread(threadID: exampleThread, userID: exampleUser)
+    }
 }

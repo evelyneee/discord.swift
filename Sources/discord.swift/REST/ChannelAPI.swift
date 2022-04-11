@@ -61,12 +61,34 @@ public extension Bot {
         _ = try await self.client.request(using: request)
     }
     
-    func sendMessage(channelID: String, content: String) async throws -> Discord.Message {
+    //TODO: - use JSONEncoder for this function's URLRequest body
+    func sendMessage(
+        channelID: String,
+        content: String,
+        isTSSMessage: Bool = false,
+        embeds: [Discord.Embed] = [],
+        stickerIDS: [String] = [],
+        attachments: [Discord.Attachment] = [],
+        replyingTo msgRef: Discord.MessageReference? = nil
+    ) async throws -> Discord.Message {
         let url = Discord.APIEndpoints.channels
             .appendingPathComponent(channelID)
             .appendingPathComponent("messages")
         let request = URLRequest(withURL: url, httpMethod: "POST")
-        return try await self.client.request(using: request, bodyObject: ["content":content], decodeTo: Discord.Message.self)
+        
+        var params: [String: Any] = [
+            "content": content,
+            "tts": isTSSMessage,
+            "embeds": embeds,
+            "sticker_ids": stickerIDS,
+            "attachments": attachments
+        ]
+        
+        if let msgRef = msgRef {
+            params["message_reference"] = msgRef
+        }
+        
+        return try await self.client.request(using: request, bodyObject: params, decodeTo: Discord.Message.self)
     }
     
     func deleteMessage(channelID: String, messageID: String) async throws {
@@ -82,14 +104,10 @@ public extension Bot {
     ///   - channelID: The Channel from which to delete the messages
     ///   - messageIDs: An array of Message IDs to delete
     func bulkDeleteMessages(channelID: String, messageIDs: [String]) async throws {
-        //TODO: - move this URL to APIEndpoints enum
-        let url = Discord.APIEndpoints.channels
-            .appendingPathComponent(channelID)
-            .appendingPathComponent("messages")
-            .appendingPathComponent("bulk-delete")
+        let url = Discord.APIEndpoints.bunkDeleteEndpoint(channelID: channelID)
         let jsonParams: [String: Any] = [
             "messages": messageIDs
         ]
-        _ = try await self.client.request(using: URLRequest(withURL: url, httpMethod: "POST"), bodyObject: jsonParams)
+        _ = try await self.client.request(using: URLRequest(withURL: url, httpMethod: "POST"), bodyObject: jsonParams, headers: ["Content-type": "application/json"])
     }
 }

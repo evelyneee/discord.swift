@@ -1,8 +1,8 @@
 
 import Foundation
 
-extension Discord {
-    public struct Channel: Decodable, Identifiable {
+public extension Discord {
+    struct Channel: Decodable, Identifiable {
         public enum CodingKeys: String, CodingKey {
             case id, type, position, name, topic, recipients, icon
             case guildID = "guild_id"

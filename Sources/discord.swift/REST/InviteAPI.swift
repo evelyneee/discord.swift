@@ -57,4 +57,14 @@ public extension Bot {
         decoder.dateDecodingStrategy = .iso8601
         return try await self.client.request(using: URLRequest(withURL: url, httpMethod: "POST"), bodyObject: jsonParams, decodeTo: Discord.Invite.self, decoder: decoder)
     }
+    
+    /// Fetches the Invites for a specified
+    func fetchInvites(channelID: String) async throws -> [Discord.Invite] {
+        let url = Discord.APIEndpoints.channels
+            .appendingPathComponent(channelID)
+            .appendingPathComponent("invites")
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try await self.client.request(with: url, decodeTo: [Discord.Invite].self, decoder: decoder)
+    }
 }

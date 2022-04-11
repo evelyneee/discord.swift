@@ -113,4 +113,28 @@ public extension Discord {
             case partyID = "party_id"
         }
     }
+    
+    /// Represents a Message being referenced, ie when being replied to.
+    struct MessageReference: Codable {
+        let messageID: String?
+        let channelID: String?
+        let guildID: String?
+        let failIfMessageDoesntExist: Bool?
+        
+        enum CodingKeys: String, CodingKey {
+            case messageID = "message_id"
+            case channelID = "channel_id"
+            case guildID = "guild_id"
+            case failIfMessageDoesntExist = "fail_if_not_exists"
+        }
+    }
+    
+    enum MessageComponentsType: Int, Codable {
+        case ActionRow = 1
+        case Button = 2
+        case SelectMenu = 3
+        case textInput = 4
+    }
+
+    
 }

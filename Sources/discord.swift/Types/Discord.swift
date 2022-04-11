@@ -114,6 +114,39 @@ public enum Discord {
             
             return url
         }
+        
+        /// Returns the Bulk-Delete Endpoint for a specified channel
+        static func bunkDeleteEndpoint(channelID: String) -> URL {
+            return channels
+                .appendingPathComponent(channelID)
+                .appendingPathComponent("messages")
+                .appendingPathComponent("bulk-delete")
+        }
+        
+        /// Returns the Threads Endpoint for a Channel, and a message if specified
+        static func threadsEndpoint(channelID: String, messageID: String?) -> URL {
+            let url = channels.appendingPathComponent(channelID)
+            if let messageID = messageID {
+                return url
+                    .appendingPathComponent("messages")
+                    .appendingPathComponent(messageID)
+                    .appendingPathComponent("threads")
+            }
+            
+            return url.appendingPathComponent("threads")
+        }
+        
+        /// Returns the Endpoint for Thread Members for a specified threadID, and a user if specified
+        static func threadMembersEndpoint(threadID: String, userID: String?) -> URL {
+            let url = channels
+                .appendingPathComponent(threadID)
+                .appendingPathComponent("thread-members")
+            if let userID = userID {
+                return url.appendingPathComponent(userID)
+            }
+            
+            return url
+        }
     }
 }
 
