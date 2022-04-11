@@ -41,7 +41,7 @@ final public class NetworkClient {
         var request = req
         
         if request.url?.absoluteString.contains("https://discord.com/api") ?? false {
-            request.addValue(self.token, forHTTPHeaderField: "Authorization")
+            request.addValue("Bot" + self.token, forHTTPHeaderField: "Authorization")
         }
         
         if let bodyObject = bodyObject  {
