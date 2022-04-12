@@ -12,7 +12,7 @@ enum TestErrors: Error, LocalizedError {
     }
 }
 
-final class Tests: XCTestCase {
+final class RESTWrapperTests: XCTestCase {
     let enviroment = ProcessInfo.processInfo.environment
     
     private func getEnv(_ variable: String) throws -> String {
@@ -271,5 +271,13 @@ final class Tests: XCTestCase {
         let exampleThread = try getEnv("EXAMPLE_CHANNEL_ID")
         let exampleUser = (try? getEnv("EXAMPLE_USER_ID")) ?? "@me"
         try await bot.removeUserFromThread(threadID: exampleThread, userID: exampleUser)
+    }
+    
+    func testFetchGuildMember() async throws {
+        let bot = try initBot()
+        let exampleGuild = try getEnv("EXAMPLE_GUILD_ID")
+        let exampleUser = try getEnv("EXAMPLE_USER_ID")
+        let fetchedMember = try await bot.fetchGuildMember(guildID: exampleGuild, userID: exampleUser)
+        print("fetchedMember: \(fetchedMember)")
     }
 }

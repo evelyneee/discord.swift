@@ -1,10 +1,10 @@
 
 import Foundation
 
-public let ENABLE_LINE_LOGGING: Bool = true
-public let ENABLE_FILE_EXTENSION_LOGGING: Bool = false
+internal let ENABLE_LINE_LOGGING: Bool = true
+internal let ENABLE_FILE_EXTENSION_LOGGING: Bool = false
 
-public func log<T>(_ items: T..., file: String = #fileID, line: Int = #line, separator: String = " ") {
+internal func log<T>(_ items: T..., file: String = #fileID, line: Int = #line, separator: String = " ") {
     let file = ENABLE_FILE_EXTENSION_LOGGING ?
         file.components(separatedBy: "/").last ?? "discord.swift" :
         file.components(separatedBy: "/").last?.components(separatedBy: ".").first ?? "discord.swift"
@@ -12,7 +12,7 @@ public func log<T>(_ items: T..., file: String = #fileID, line: Int = #line, sep
     log(items: items, file: file, line: line, separator: separator)
 }
 
-public func log<S: StringProtocol>(_ items: S?..., file: String = #fileID, line: Int = #line, separator: String = " ") {
+internal func log<S: StringProtocol>(_ items: S?..., file: String = #fileID, line: Int = #line, separator: String = " ") {
     let items: [String] = items.map { $0 ?? "nil" }.compactMap { String($0) }
     let file = ENABLE_FILE_EXTENSION_LOGGING ?
         file.components(separatedBy: "/").last ?? "discord.swift" :
@@ -21,14 +21,14 @@ public func log<S: StringProtocol>(_ items: S?..., file: String = #fileID, line:
     log(items: items, file: file, line: line, separator: separator)
 }
 
-public func log(_ items: Any..., file: String = #fileID) {
+internal func log(_ items: Any..., file: String = #fileID) {
     let file = ENABLE_FILE_EXTENSION_LOGGING ?
         file.components(separatedBy: "/").last ?? "discord.swift" :
         file.components(separatedBy: "/").last?.components(separatedBy: ".").first ?? "discord.swift"
     log(items: items, file: file)
 }
 
-public func log(_ item: Any, file: String = #fileID, line: Int = #line) {
+internal func log(_ item: Any, file: String = #fileID, line: Int = #line) {
     let file = ENABLE_FILE_EXTENSION_LOGGING ?
         file.components(separatedBy: "/").last ?? "discord.swift" :
         file.components(separatedBy: "/").last?.components(separatedBy: ".").first ?? "discord.swift"
@@ -36,7 +36,7 @@ public func log(_ item: Any, file: String = #fileID, line: Int = #line) {
     log(items: [item], file: file, line: line)
 }
 
-private func log<T>(items: [T], file: String, line: String? = nil, separator: String = " ") {
+internal func log<T>(items: [T], file: String, line: String? = nil, separator: String = " ") {
     var out = String()
     for item in items {
         if type(of: item) is AnyClass {

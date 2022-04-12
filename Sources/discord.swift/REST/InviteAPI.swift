@@ -20,9 +20,7 @@ public extension Bot {
         
         let encodedURL = try self.client.EncodeURL(url, with: body)
         
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try await self.client.request(with: encodedURL, decodeTo: Discord.Invite.self, decoder: decoder)
+        return try await self.client.request(with: encodedURL, decodeTo: Discord.Invite.self, decoder: .discordDateCompatible)
     }
     
     /// Sends a Request to discord to delete the specified invite
@@ -53,9 +51,8 @@ public extension Bot {
         if let maxUses = maxUses {
             jsonParams["max_uses"] = maxUses
         }
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try await self.client.request(using: URLRequest(withURL: url, httpMethod: "POST"), bodyObject: jsonParams, decodeTo: Discord.Invite.self, decoder: decoder)
+        
+        return try await self.client.request(using: URLRequest(withURL: url, httpMethod: "POST"), bodyObject: jsonParams, decodeTo: Discord.Invite.self, decoder: .discordDateCompatible)
     }
     
     /// Fetches the Invites for a specified
@@ -63,8 +60,6 @@ public extension Bot {
         let url = Discord.APIEndpoints.channels
             .appendingPathComponent(channelID)
             .appendingPathComponent("invites")
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try await self.client.request(with: url, decodeTo: [Discord.Invite].self, decoder: decoder)
+        return try await self.client.request(with: url, decodeTo: [Discord.Invite].self, decoder: .discordDateCompatible)
     }
 }

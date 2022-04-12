@@ -93,12 +93,15 @@ public enum Discord {
             return url
         }
         
-        /// Returns the members endpoint for a specified User and Guld
-        static func guildMembersEndpoint(guildID: String, userID: String) -> URL {
-            self.guilds
+        /// Returns the members endpoint for a Guld and a member, if specified
+        static func guildMembersEndpoint(guildID: String, userID: String?) -> URL {
+            let url = self.guilds
                 .appendingPathComponent(guildID)
                 .appendingPathComponent("members")
-                .appendingPathComponent(userID)
+            if let userID = userID {
+                return url.appendingPathComponent(userID)
+            }
+            return url
         }
         
         /// Returns the Pinned Messages Endpoint for a specified Channel

@@ -97,11 +97,50 @@ public extension Bot {
         let request = URLRequest(withURL: url, httpMethod: "DELETE")
         _ = try await self.client.request(using: request)
     }
-}
-
-extension Discord.Guild {
-//    #warning("TODO: Bans, kicks, fetch members, etc")
-//    public func ban() async throws -> Bool {
-//        let (items, response) = try await self.client.fetch(AnyDecodable.self, url: Discord.Endpoints.guilds)
-//    }
+    
+    /// Returns information about a Guild Member by their User ID
+    /// - Parameters:
+    ///   - guildID: The GuildID to search the user in
+    ///   - userID: The ID of the User
+    /// - Returns: A `Discord.GuildMember` instance
+    func fetchGuildMember(guildID: String, userID: String) async throws -> Discord.GuildMember {
+        let url = Discord.APIEndpoints.guildMembersEndpoint(guildID: guildID, userID: userID)
+        return try await self.client.request(with: url, decodeTo: Discord.GuildMember.self, decoder: .discordDateCompatible)
+    }
+    
+    /// Returns an array of `Discord.GuildMember` instances containing information about a Guild's members
+    /// - Parameter guildID: The ID of the guild to return the Guild
+    /// - Returns: An array of `Discord.GuildMember`
+    func fetchGuildMembers(guildID: String) async throws -> [Discord.GuildMember] {
+        let url = Discord.APIEndpoints.guildMembersEndpoint(guildID: guildID, userID: nil)
+        return try await self.client.request(with: url, decodeTo: [Discord.GuildMember].self, decoder: .discordDateCompatible)
+    }
+    
+    /// Searches a Guild for members containing the specified search term in their nicknames
+    /// - Parameters:
+    ///   - guildID: The ID of the guild to search
+    ///   - query: The Query to search the members
+    ///   - limit: The maximum amount of GuildMembers that are allowed to be returned
+    /// - Returns: An array of `Discord.GuildMember` instances
+    func searchGuildMembers(guildID: String, query: String, limit: Int? = nil) async throws -> [Discord.GuildMember] {
+        var params = [
+            "query": query,
+        ]
+            
+        if let limit = limit {
+            params["limit"] = "\(limit)"
+        }
+        let baseURL = Discord.APIEndpoints.guildMembersEndpoint(guildID: guildID, userID: nil)
+        let searchURL = try self.client.EncodeURL(baseURL, with: params)
+        return try await self.client.request(with: searchURL, decodeTo: [Discord.GuildMember].self, decoder: .discordDateCompatible)
+    }
+    
+    /// Renames a user in a specified Guild 
+    func setNickname(to newnick: String, userID: String, guildID: String) async throws {
+        let url = Discord.APIEndpoints.guildMembersEndpoint(guildID: guildID, userID: userID)
+        let params = [
+            "nick": newnick
+        ]
+        _ = try await self.client.request(using: URLRequest(withURL: url, httpMethod: "PATCH"), bodyObject: params, headers: ["Content-type": "application/json"])
+    }
 }

@@ -1,7 +1,7 @@
 
 import Foundation
 
-internal let DEFAULT_MIME_TYPE = "application/octet-stream"
+internal let defaultMimeType = "application/octet-stream"
 
 internal let mimeTypes = [
     "html": "text/html",
@@ -101,7 +101,7 @@ internal let mimeTypes = [
 ]
 
 internal func MimeType(ext: String?) -> String {
-    mimeTypes[ext?.lowercased() ?? ""] ?? DEFAULT_MIME_TYPE
+    mimeTypes[ext?.lowercased() ?? ""] ?? defaultMimeType
 }
 
 public extension URL {

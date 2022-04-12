@@ -35,11 +35,9 @@ public extension Bot {
         return try await self.client.request(using: URLRequest(withURL: url, httpMethod: "POST"), bodyObject: params, headers: ["Content-type": "application/json"], decodeTo: Discord.Channel.self)
     }
     
-    func fetchMembers(fromThread threadID: String) async throws -> [Discord.ThreadMember] {
+    func fetchThreadMembers(fromThread threadID: String) async throws -> [Discord.ThreadMember] {
         let url = Discord.APIEndpoints.threadMembersEndpoint(threadID: threadID, userID: nil)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try await self.client.request(with: url, decodeTo: [Discord.ThreadMember].self, decoder: decoder)
+        return try await self.client.request(with: url, decodeTo: [Discord.ThreadMember].self, decoder: .discordDateCompatible)
     }
     
     /// Sends a request to discord to add a member to a specific Thread
