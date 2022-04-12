@@ -21,4 +21,27 @@ extension Bot {
         let request = URLRequest(withURL: url, httpMethod: "DELETE")
         _ = try await self.client.request(using: request)
     }
+    
+    
+    /// Sends a reques to discord to modify an emote
+    /// - Parameters:
+    ///   - emoteID: The ID of the Emote to edit
+    ///   - guildID: The ID which the Emote resides in
+    ///   - newEmoteName: The new name of the Emote
+    ///   - rolesAllowed: An array of Role IDs allowed to use the emote
+    /// - Returns: A `Discord.Emote` instance of the newly-modified emote
+    func modifyEmote(emoteID: String, guildID: String, newEmoteName: String?, rolesAllowed: [String]? = nil) async throws -> Discord.Emote {
+        var params: [String: Any] = [:]
+        
+        if let newEmoteName = newEmoteName {
+            params["name"] = newEmoteName
+        }
+        
+        if let rolesAllowed = rolesAllowed {
+            params["roles"] = rolesAllowed
+        }
+        
+        let url = Discord.APIEndpoints.guildEmotesEndpoint(guildID: guildID, emoteID: emoteID)
+        return try await self.client.request(using: URLRequest(withURL: url, httpMethod: "PATCH"), bodyObject: params, headers: ["Content-type": "application/json"], decodeTo: Discord.Emote.self, decoder: .discordDateCompatible)
+    }
 }
