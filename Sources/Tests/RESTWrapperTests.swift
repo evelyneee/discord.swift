@@ -23,7 +23,7 @@ final class RESTWrapperTests: XCTestCase {
     }
     
     private func initBot() throws -> Bot {
-        return Bot(try getEnv("BOT_TOKEN"))
+        return Bot(token: try getEnv("BOT_TOKEN"))
     }
     
     func testExampleGuild() async throws {
@@ -136,7 +136,7 @@ final class RESTWrapperTests: XCTestCase {
     func testCreateRole() async throws {
         let bot = try initBot()
         let exampleGuild = try getEnv("EXAMPLE_GUILD_ID")
-        let createdRole = try await bot.createRole(guildID: exampleGuild, name: "An example role", colorRGB: 1021)
+        let createdRole = try await bot.createRole(guildID: exampleGuild, name: "An example role", colorRGB: Int.random(in: 1...255))
         print("Created Role: \(createdRole)")
     }
     
@@ -279,5 +279,14 @@ final class RESTWrapperTests: XCTestCase {
         let exampleUser = try getEnv("EXAMPLE_USER_ID")
         let fetchedMember = try await bot.fetchGuildMember(guildID: exampleGuild, userID: exampleUser)
         print("fetchedMember: \(fetchedMember)")
+    }
+    
+    func testFetchAuditLog() async throws {
+        let bot = try initBot()
+        let exampleGuild = try getEnv("EXAMPLE_GUILD_ID")
+        let auditLog = try await bot.fetchAuditLog(guildID: exampleGuild)
+        for entry in auditLog.entries {
+            print("entry: \(entry)")
+        }
     }
 }

@@ -13,18 +13,18 @@ public class Bot {
     
     public var onConnect: (() async throws -> Void)?
     
-    // Initialize client from token
-    public init (_ token: String, intents: Discord.Intents = []) {
+    /// Initializes a new instance with the specified Bot Token
+    public init (token: String, intents: Discord.Intents = []) {
         self.token = token
         self.gateway = Gateway(token: token, intents: intents)
         self.client = NetworkClient(token)
         self.intents = intents
     }
     
-    // Initialize client from BOT_TOKEN env var
-    public convenience init? () {
+    /// Initializes a new Bot instance from the `BOT_TOKEN` enviroment variable
+    public convenience init?(intents: Discord.Intents = []) {
         guard let token = ProcessInfo.processInfo.environment["BOT_TOKEN"] else { return nil }
-        self.init(token)
+        self.init(token: token, intents: intents)
     }
     
     public func connect() async throws {
